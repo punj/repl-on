@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    
+    <filter>
+        <filter-name>struts2</filter-name>
+        <filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter
+
+        </filter-class>
+    </filter>
+  
+    <filter-mapping>
+        <filter-name>struts2</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <listener>
+        <listener-class>org.apache.struts2.tiles.StrutsTilesListener</listener-class>
+    </listener>
+    <context-param>
+        <param-name>tilesDefinitions</param-name>
+        <param-value>/WEB-INF/tiles.xml</param-value>
+
+    </context-param>
+   
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file> 
+        <!--                 <welcome-file>demoModel.jsp</welcome-file>-->
+    </welcome-file-list>
+    
+    <!--<error-page>-->
+    
+     <!--servlet>
+	    <description>Servlet for file uploads</description>
+	    <display-name>File Upload Servlet</display-name>
+	    <servlet-name>FileUploadServlet</servlet-name>     
+	    <servlet-class>psclistens.ajax.fileupload.FileUploadServlet</servlet-class>
+	</servlet>
+
+    <servlet-mapping>
+        <servlet-name>FileUploadServlet</servlet-name>
+        <url-pattern>/servlet/FileUploadServlet</url-pattern>
+    </servlet-mapping-->
+        
+    <!--        
+        <servlet>
+        <servlet-name>UploadFile</servlet-name>
+        <servlet-class>com.fileupload.UploadFile</servlet-class>
+</servlet>
+<servlet-mapping>
+        <servlet-name>UploadFile</servlet-name>
+        <url-pattern>/servlet/UploadFile</url-pattern>
+</servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>-->
+</web-app>

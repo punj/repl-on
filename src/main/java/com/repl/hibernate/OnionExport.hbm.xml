@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Oct 5, 2018 5:00:24 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.repl.hibernate.OnionExport" table="onion_export" catalog="exim_data" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="sbNo" type="java.lang.Integer">
+            <column name="sb_no" />
+        </property>
+        <property name="sbDate" type="date">
+            <column name="sb_date" length="0" />
+        </property>
+        <property name="hsCode" type="java.lang.Integer">
+            <column name="hs_code" />
+        </property>
+        <property name="productDescription" type="string">
+            <column name="product_description" length="256" />
+        </property>
+        <property name="quantity" type="java.lang.Double">
+            <column name="quantity" precision="11" scale="3" />
+        </property>
+        <property name="unit" type="string">
+            <column name="unit" length="8" />
+        </property>
+        <property name="fobValueTotalInr" type="java.lang.Double">
+            <column name="fob_value_total_inr" precision="11" scale="3" />
+        </property>
+        <property name="amtInForeignCurrency" type="java.lang.Double">
+            <column name="amt_in_foreign_currency" precision="11" scale="3" />
+        </property>
+        <property name="fobValueInr" type="java.lang.Double">
+            <column name="fob_value_inr" precision="11" scale="3" />
+        </property>
+        <property name="unitPriceInr" type="java.lang.Double">
+            <column name="unit_price_inr" precision="11" scale="3" />
+        </property>
+        <property name="fobValueUsd" type="java.lang.Double">
+            <column name="fob_value_usd" precision="11" scale="3" />
+        </property>
+        <property name="unitPriceUsd" type="java.lang.Double">
+            <column name="unit_price_usd" precision="11" scale="3" />
+        </property>
+        <property name="exchangerRateUsd" type="java.lang.Double">
+            <column name="exchanger_rate_usd" precision="7" scale="3" />
+        </property>
+        <property name="valueInvCurr" type="java.lang.Double">
+            <column name="value_inv_curr" precision="11" scale="3" />
+        </property>
+        <property name="itemRateInvCurr" type="java.lang.Double">
+            <column name="item_rate_inv_curr" precision="11" scale="3" />
+        </property>
+        <property name="invoiceCurrency" type="string">
+            <column name="invoice_currency" length="6" />
+        </property>
+        <property name="exporterName" type="string">
+            <column name="exporter_name" length="128" />
+        </property>
+        <property name="exporterAddress" type="string">
+            <column name="exporter_address" length="256" />
+        </property>
+        <property name="exporterCity" type="string">
+            <column name="exporter_city" length="64" />
+        </property>
+        <property name="exporterPin" type="string">
+            <column name="exporter_pin" length="24" />
+        </property>
+        <property name="exporterState" type="string">
+            <column name="exporter_state" length="32" />
+        </property>
+        <property name="consigneeName" type="string">
+            <column name="consignee_name" length="64" />
+        </property>
+        <property name="consigneeAddress" type="string">
+            <column name="consignee_address" length="192" />
+        </property>
+        <property name="consigneeCountry" type="string">
+            <column name="consignee_country" length="32" />
+        </property>
+        <property name="destinationPort" type="string">
+            <column name="destination_port" length="32" />
+        </property>
+        <property name="destinationCountry" type="string">
+            <column name="destination_country" length="64" />
+        </property>
+        <property name="foreignRegion" type="string">
+            <column name="foreign_region" length="32" />
+        </property>
+        <property name="invoiceNumber" type="string">
+            <column name="invoice_number" length="32" />
+        </property>
+        <property name="itemNumber" type="java.lang.Integer">
+            <column name="item_number" />
+        </property>
+        <property name="chaName" type="string">
+            <column name="cha_name" length="64" />
+        </property>
+        <property name="chaPan" type="string">
+            <column name="cha_pan" length="24" />
+        </property>
+        <property name="iec" type="string">
+            <column name="iec" length="32" />
+        </property>
+        <property name="hsCode2Digit" type="java.lang.Integer">
+            <column name="hs_code_2_digit" />
+        </property>
+        <property name="hsCode4Digit" type="java.lang.Integer">
+            <column name="hs_code_4_digit" />
+        </property>
+        <property name="indianPort" type="string">
+            <column name="indian_port" length="24" />
+        </property>
+        <property name="shipmentMode" type="string">
+            <column name="shipment_mode" length="16" />
+        </property>
+        <property name="indianRegions" type="string">
+            <column name="indian_regions" length="16" />
+        </property>
+        <property name="contactInfo" type="string">
+            <column name="contact_info" length="256" />
+        </property>
+        <property name="comment" type="string">
+            <column name="comment" length="256" />
+        </property>
+        <property name="commuincatedEver" type="string">
+            <column name="commuincated_ever" length="2" />
+        </property>
+        <property name="isContactInfoFound" type="string">
+            <column name="is_contact_info_found" length="2">
+                <comment>Contat detail tried to find but details not found on google. Y - triend but details not found, N- not tried to find details ever</comment>
+            </column>
+        </property>
+        <property name="phone" type="string">
+            <column name="phone" length="128" />
+        </property>
+        <property name="web" type="string">
+            <column name="web" length="64" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="128" />
+        </property>
+        <property name="isIrrelevant" type="string">
+            <column name="isIrrelevant" length="2" />
+        </property>
+    </class>
+</hibernate-mapping>

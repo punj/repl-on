@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+ 
+<struts>  
+    <!--<include file="example.xml"/>-->  
+    <!-- Configuration for the default package. -->
+    <!--<constant name="struts.ui.templateSuffix" value="java" />-->
+    <!--<constant name="struts.ui.theme.expansion.token" value="" ></constant>-->
+    <!--<constant name="struts.custom.i18n.resources" value="global" />-->
+
+    <!--<bean type="org.apache.struts2.views.TagLibraryDirectiveProvider" name="sjc" class="com.jgeppert.struts2.jquery.chart.views.JqueryChartTagLibrary" />-->
+    <!--<bean type="org.apache.struts2.views.TagLibraryModelProvider" name="sjc" class="com.jgeppert.struts2.jquery.chart.views.JqueryChartTagLibrary" />-->
+    <constant name="struts.ui.theme" value="simple" />
+    <constant name="struts.enable.DynamicMethodInvocation" 
+              value="false" /> 
+    <constant name="struts.ui.theme" value="simple" /> 
+    <constant name="struts.devMode" value="true" /> 
+   
+    <constant name="struts.configuration.xml.reload" value="true" />
+    <constant name="struts.action.excludePattern" value="/servlet/.*?"></constant>
+  
+    <!--<package name="default" extends="struts-default"   strict-method-invocation="true" >-->
+    <package name="default" extends="json-default"   strict-method-invocation="true" >
+        <result-types>
+            <result-type name="tiles" class="org.apache.struts2.views.tiles.TilesResult"/>
+        </result-types>
+
+        <interceptors>
+            
+           
+            <interceptor-stack name="authStack">
+                <!--<interceptor-ref name="i18n"/>-->
+                <!--<interceptor-ref name="defaultStack"></interceptor-ref>-->
+            </interceptor-stack>
+        </interceptors>
+
+        <default-interceptor-ref name="authStack"></default-interceptor-ref>       
+        
+        <global-results>
+            <result name="login" type="redirect">/home.action</result>
+        </global-results>
+        
+        <action name="home"> 
+            <interceptor-ref name="defaultStack"></interceptor-ref>
+            <result>WEB-INF/jsp/Login.jsp</result>
+        </action> 
+        
+        <action name="Login_*"    method="{1}"  class="com.repl.action.LoginAction">
+            <interceptor-ref name="defaultStack"></interceptor-ref>
+            <result name="success" type="tiles">/welcome.tiles</result>
+            <!--<result name="success" type="redirect">/Exim.action</result>-->
+
+            <result name="input">/WEB-INF/jsp/Login.jsp</result>
+
+        </action>
+        
+        <action name="Exim_*"    method="{1}"  class="com.repl.action.exim.EximAction">
+            <interceptor-ref name="defaultStack"></interceptor-ref>
+            <!--<result name="view" type="tiles">/welcome.tiles</result>-->
+            <result name="view">WEB-INF/jsp/exim_db_view/view.jsp</result>
+            <result name="input" type="tiles">/welcome.tiles</result>
+             
+            <result name="updated" type="redirectAction">
+              <param name="actionName">Exim_.action</param>
+      <param name="pageNo">${eximBean.pageNo}</param>
+            </result>
+
+            <!--<result name="input">/WEB-INF/jsp/Login.jsp</result>-->
+            <allowed-methods>updateConsigneeInfo, loadConsigneeDetailReport, generateTable</allowed-methods>
+        </action>
+       
+
+    </package>
+ 
+</struts>  
