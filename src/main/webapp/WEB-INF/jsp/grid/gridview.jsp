@@ -9,7 +9,8 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>View Export Data</title>
+
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"/>
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
         <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
@@ -51,182 +52,242 @@
                 }
             }
 
+            .loader {
+                border: 16px solid #f3f3f3;
+                border-radius: 50%;
+                border-top: 16px solid #3498db;
+                width: 120px;
+                height: 120px;
+                -webkit-animation: spin 2s linear infinite; /* Safari */
+                animation: spin 2s linear infinite;
+            }
+
+            /* Safari */
+            @-webkit-keyframes spin {
+                0% { -webkit-transform: rotate(0deg); }
+                100% { -webkit-transform: rotate(360deg); }
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+
         </style>
 
         <script>
 
             function format(d) {
-                return 'Full name: ' + d.first_name + ' ' + d.last_name + '<br>' +
-                        'Salary: ' + d.salary + '<br>' +
-                        'The child row can contain any data you wish, including links, images, inner tables etc.';
+            return 'Full name: ' + d.first_name + ' ' + d.last_name + '<br>' +
+                    'Salary: ' + d.salary + '<br>' +
+                    'The child row can contain any data you wish, including links, images, inner tables etc.';
             }
             $(document).ready(function () {
-                // Setup - add a text input to each footer cell
-                $('#example tfoot th').each(function (i) {
-                    var title = $('#example thead th').eq($(this).index()).text();
-                    $(this).html('<input type="text" placeholder="Search ' + title + '" data-index="' + i + '" />');
-                });
-                //
-                ;
-                var selected = [];
-                var table = $('#example').DataTable({
-                    dom: 'Bfrtip',
+            // Setup - add a text input to each footer cell
+            $('#example tfoot th').each(function (i) {
+            var title = $('#example thead th').eq($(this).index()).text();
+            $(this).html('<input type="text" placeholder="Search ' + title + '" data-index="' + i + '" />');
+            });
+            //
+            ;
+            var selected = [];
+            var table = $('#example').DataTable({
+            dom: 'Bfrtip',
                     buttons: [
-                        'colvis'
+                            'colvis'
                     ],
                     columnDefs: [
-                        {
+                    {
 //                            targets: -1,
 //                            visible: false
-                        }
+                    }
                     ],
                     select: true,
                     "processing": true,
                     "serverSide": true,
 //                   table.columns.adjust().draw( false );
                     "ajax"
-                            : {
-                                "url"
-                                        : "Grid_loadGridData.action",
+                    : {
+                    "url"
+                            : "Grid_loadGridData.action",
 //                        "url": "ajax2.data",
-                                "data"
-                                        : function (d) {
-                                            console.log("!!!!! " + JSON.stringify(d));
-                                            d.myKey = "myValue";
-                                            // d.custom = $('#myInput').val();
-                                            // etc
-                                        },
-                                /* success: function () {
-                                 console.log("success")
-                                 //                            table.draw();
-                                 },*/
-                                dataFilter: function (data) {
-                                    var json = jQuery.parseJSON(data);
-                                    console.log('filter***  ' + json);
-                                    console.log('filter***  ' + json.recordsTotal);
-                                    json.recordsTotal = json.total;
-                                    json.recordsFiltered = json.total;
+                            "data"
+                            : function (data) {
+//                                            data.myKey = "myValue";
+                            data.minQty = $('#minQty').val();
+                            data.maxQty = $('#maxQty').val();
+                            console.log("!!!!! " + JSON.stringify(data));
+                            // d.custom = $('#myInput').val();
+                            // etc
+                            },
+                            /* success: function () {
+                             console.log("success")
+                             //                            table.draw();
+                             },*/
+                            dataFilter: function (data) {
+                            var json = jQuery.parseJSON(data);
+                            console.log('filter***  ' + json);
+                            console.log('filter***  ' + json.recordsTotal);
+                            json.recordsTotal = json.total;
+                            json.recordsFiltered = json.total;
 //                            json.data = json.list;
 //                            console.log(JSON.stringify(json));
-                                    return JSON.stringify(json); // return JSON string
-                                }
-                            },
-                    "rowCallback": function (row, data) {
-                        if ($.inArray(data.DT_RowId, selected) !== -1) {
-                            $(row).addClass('selected');
-                        }
+                            return JSON.stringify(json); // return JSON string
+                            }
                     },
-                    "pagingType": "full_numbers",
-                    stateSave: true,
-                    scrollY: '50vh',
+                    "rowCallback": function (row, data) {
+                    if ($.inArray(data.DT_RowId, selected) !== - 1) {
+                    $(row).addClass('selected');
+                    }
+                    },
+                    // "pagingType": "full_numbers",
+
+                    "paginate": {
+                    "first": "First",
+                            "previous": "Previous",
+                            "next": "Next",
+                            "last": "Last"
+                    },
+                    language: {
+                    searchPlaceholder: "Search Consignee"
+                    },
+                     stateSave: true,
+                    scrollY: '52vh',
                     // scrollY: 200,
                     deferRender: true,
                     scroller: true,
                     keys: true, fixedHeader: {
-                        header: true,
-                        footer: true
+                    //header: true,
+                    //  footer: true
                     },
-                    "responsive": false,
+                    "responsive": true,
 //                    "ajax": "ajax.data",
 
                     buttons: [
-                        'copy', 'excel', 'pdf'
+                            'copy', 'excel', 'pdf'
                     ],
-                            "columns": [
-                                {"data": "sb_date"},
-                                {"data": "consignee_name"},
-                                {"data": "destination_port"},
-                                {"data": "quantity"},
-                                {"data": "unit"},
-                                {"data": "is_contact_info_found"},
-                                {"data": "hasTooManyShipments"}
-                            ],
+                    "columns": [
+                    {"data": "sb_date"},
+                    {"data": "consignee_name"},
+                    {"data": "destination_port"},
+                    {"data": "quantity"},
+                    {"data": "unit"},
+                    {"data": "is_contact_info_found"},
+                    {"data": "hasTooManyShipments"}
+                    ],
                     "columnDefs": [
-                        {
-                            "width": "2%",
+                    {
+                    "width": "2%",
                             "targets": [0],
                             "visible": true,
                             "searchable": false
-                        },
-                        {
-                            "targets": [1],
+                    },
+                    {
+                    "targets": [1],
                             "visible": true
-                        },
-                        {
-                            "targets": [2],
+                    },
+                    {
+                    "targets": [2],
                             "visible": true,
                             "searchable": false
-                        },
-                        {
-                            "targets": [3],
+                    },
+                    {
+                    "targets": [3],
                             "visible": true,
                             "searchable": false
-                        },
-                        {
-                            "targets": [4],
+                    },
+                    {
+                    "targets": [4],
                             "visible": false,
                             "searchable": false
-                        },
-                        {
-                            "targets": [5],
+                    },
+                    {
+                    "targets": [5],
                             "visible": false,
                             "searchable": false
-                        },
-                        {
-                            "targets": [6],
+                    },
+                    {
+                    "targets": [6],
                             "visible": false,
                             "searchable": false
-                        }
-                    ]
-                });
-                // add row
-
-
-                // on click
-
-                $('#example tbody').on('click', 'tr', function () {
-                    //alert('sgn selected ')
-                    console.log("%%%%%%%%% " + JSON.stringify(table.row(this).data()));
-                    var cname1 = table.row(this).data().consignee_name;
-                    document.getElementById('loadNewPage').src = "Grid_createGrid.action?cName=" + cname1;
-                    console.log("URL for IFRAME " + document.getElementById('loadNewPage').src);
-                    $("#modalTitle").html(cname1);
-                    //  callPage();
-                    $('#myModal').modal('show');
-                    if ($(this).hasClass('selected')) {
-                        $(this).removeClass('selected');
-                    } else {
-                        table.$('tr.selected').removeClass('selected');
-                        $(this).addClass('selected');
                     }
-                });
-                $('#button').click(function () {
-                    table.row('.selected').remove().draw(false);
-                });
-                $('#showBtn').click(function () {
-                    //alert("ss")
-                    //table.columns.adjust().draw(false);
-                });
-                //  table.column(0).width("2%");
-                table.column(0).visible(true, true);
-                table.column(1).visible(true, true);
-                table.column(2).visible(true, true);
-                table.column(3).visible(true, true);
-                table.column(4).visible(true, true);
-                table.column(5).visible(true, true);
-                table.column(6).visible(true, true);
+                    ]
+            });
+            // add row
+
+
+            // on click
+
+            $('#example tbody').on('click', 'tr', function () {
+            //alert('sgn selected ')
+            console.log("%%%%%%%%% " + JSON.stringify(table.row(this).data()));
+            var cname1 = table.row(this).data().consignee_name;
+            document.getElementById('loadNewPage').src = "Grid_createGrid.action?cName=" + cname1;
+            console.log("URL for IFRAME " + document.getElementById('loadNewPage').src);
+            $("#modalTitle").html(cname1);
+            //  callPage();
+            $('#myModal').modal('show');
+            if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected');
+            } else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            }
+            });
+            $('#button').click(function () {
+            table.row('.selected').remove().draw(false);
+            });
+            $('#showBtn').click(function () {
+            //alert("ss")
+            //table.columns.adjust().draw(false);
+            });
+            //  table.column(0).width("2%");
+            table.column(0).visible(true, true);
+            table.column(1).visible(true, true);
+            table.column(2).visible(true, true);
+            table.column(3).visible(true, true);
+            table.column(4).visible(true, true);
+            table.column(5).visible(true, true);
+            table.column(6).visible(true, true);
 //                table.column(7).visible(true, true);
-                // Apply the search
-                table.columns().every(function () {
-                    var that = this;
-                    $('input', this.footer()).on('keyup change', function () {
-                        if (that.search() !== this.value) {
-                            that
-                                    .search(this.value)
-                                    .draw();
-                        }
-                    });
-                })
+            // Apply the search
+            table.columns().every(function () {
+            var that = this;
+            console.log("that  " + that);
+            console.log("this  " + this);
+            $('input', this.footer()).on('keyup change', function () {
+            if (that.search() !== this.value) {
+            that
+                    .search(this.value)
+                    .draw();
+            }
+            });
+            })
+
+                    // loader hide
+//                $('#loadNewPage').on('load', function () {
+//                    alert('loader hide event')
+//
+//                    $('#loader1').hide();
+//                });
+
+
+
+                    //search custom
+                    $('#search').on('click change', function (event) {
+            event.preventDefault();
+            /* if ($('#minQty').val() == "")
+             {
+             $('#minQty').focus();
+             } else if ($('#maxQty').val() == "")
+             {
+             $('#maxQty').focus();
+             } else
+             {
+             table.draw();
+             }*/
+            table.draw();
+            });
             }); // ready ends
 
 
@@ -251,11 +312,33 @@
     </head>
     <body>
 
+
         <div class="container">
-            <h2>Data</h2>
+
             <!-- Trigger the modal with a button -->
             <!--<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>-->
+            <h2>View Data</h2>
 
+
+
+            <div class="well" style="text-align: center">
+                <form class="form-inline" style="text-align: center">
+                    <h4>Search Quantity </h4>
+                    <hr>
+                    <div class="form-group">
+                        <label for="minQty">Quantity</label>
+                        <input type="number" class="form-control" id="minQty" name="minQty">
+                    </div>
+                    <div class="form-group">
+                        <label for="number">Between</label>
+                        <input type="number" class="form-control" id="maxQty" name="maxQty">
+                    </div>
+                    <div class="checkbox">
+                        <!--<label><input type="checkbox"> Remember me</label>-->
+                    </div>
+                    <button style="background-color: rgb(124,77,255);color: #fff" type="submit" id="search"  class="btn btn-primary">SEARCH</button>
+                </form> 
+            </div>
             <!-- Modal -->
             <div class="modal fade" id="myModal" role="dialog">
                 <div class="modal-dialog modal-lg">
@@ -292,20 +375,20 @@
                     <th class="all">Port</th>
                     <th class="all">Quantity</th>
                     <th class="all">Unit</th>
-                    <th class="all">Contacted?</th>
-                    <th class="all">Shipments?</th>
+                    <th class="all">Has contacted detail?</th>
+                    <th class="all">Many Shipments?</th>
                     <!--<th class="all"> </th>-->
                 </tr>
             </thead>
             <tfoot>
                 <tr>
-                     <th class="all">Date</th>
+                    <th class="all">Date</th>
                     <th class="all">Consignee Name</th>
                     <th class="all">Port</th>
                     <th class="all">Quantity</th>
                     <th class="all">Unit</th>
-                    <th class="all">Contacted?</th>
-                    <th class="all">Shipments?</th>
+                    <th class="all">Has contacted detail?</th>
+                    <th class="all">Many Shipments?</th>
                     <!--<th class="all"></th>-->
                 </tr>
             </tfoot>

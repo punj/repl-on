@@ -13,7 +13,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>View Export Data</title>
         <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/easy-autocomplete/1.3.5/jquery.easy-autocomplete.js"></script>
@@ -45,9 +45,15 @@
 
         <script src="https://cdn.ckeditor.com/4.10.1/standard/ckeditor.js"></script>
         <script>
-//            alert("GRID VIEW.jsp");
 //            alert(window.frames['loadNewPage'].contentDocument.document.getElementById('consigneeName1').value());
+//            
 //            alert( document.getElementById('consigneeName1'));
+            $(document).ready(function () {
+               // alert("GRID VIEW.jsp");
+                    $('#loader1').hide();
+
+               
+            });
         </script>
 
         <style>
@@ -108,9 +114,9 @@
                         <s:actionerror/>
                     </div>
                 </s:if>
-
+ 
                 <h4>Consignee Details</h4>
-                
+
                 <div class="well">
 
                     <div class="container-fluid">
@@ -192,7 +198,7 @@
                                 <label for="inputEmail" class="control-label col-xs-3">Email</label>
                                 <div class="col-xs-9">
                                     <!--<input type="email" class="form-control" id="inputEmail" placeholder="Email">-->
-                                    <s:textfield id="eximBean.email" name="eximBean.email" class="form-control"  placeholder="Email"  readonly="true"/>
+                                    <s:textfield id="eximBean.email" name="eximBean.email" class="form-control"  placeholder="Email"  />
                                 </div>
                             </div>
                         </div>
@@ -200,7 +206,7 @@
                             <div class="form-group">
                                 <label for="inputPassword" class="control-label col-xs-4">Web</label>
                                 <div class="col-xs-7">
-                                    <s:textfield id="eximBean.web" name="eximBean.web" class="form-control"  placeholder="www.example.com" readonly="true" />
+                                    <s:textfield id="eximBean.web" name="eximBean.web" class="form-control"  placeholder="www.example.com"  />
                                 </div>
                             </div>
                         </div>
@@ -346,7 +352,7 @@
 
                             <input type="button" value="Submit" class="col-xs-1" style="text-align: center;align:center;width:250px;height:40px;" onclick="submitSave()" />
                             <%--<s:submit value="Submit" class="col-xs-1" style="text-align: center;align:center;width:250px;height:40px;"/>--%>
-                            <div id="loader1" class="loader"></div>
+                           
                         </div>
                     </div>                    
 

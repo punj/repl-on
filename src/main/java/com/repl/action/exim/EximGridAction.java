@@ -75,7 +75,7 @@ public class EximGridAction extends EximGridBean {
             int draw = 1;
             String orderFiled;
             String orderBy;
-            String length = null, start = null, searchValue = null;
+            String length = null, start = null, searchValue = null, searchMinQty = null, searchMaxQty = null;
             System.out.println("SGN");
 //search[value]
             String query = "select \n"
@@ -148,6 +148,7 @@ public class EximGridAction extends EximGridBean {
                 }
                 query += " UPPER(destination_port) like '" + searchValue.toUpperCase() + "%' ";
             }
+
             // IS CONTACT FOUND
             if (checkIfParameterValueIsNotNull(IS_CONTACT_INFO_FOUND_COLUMN)) {
                 searchValue = getParameterValue(IS_CONTACT_INFO_FOUND_COLUMN);
@@ -171,7 +172,57 @@ public class EximGridAction extends EximGridBean {
                 query += " UPPER(is_contact_info_found) like '" + searchValue + "%' ";
             }
 
-            query += "group by consignee_name\n";
+            query += "group by consignee_name, unit\n";
+            
+            // QTY SEARCH between
+            if (checkIfParameterValueIsNotNull(SEARCH_MINQTY) && checkIfParameterValueIsNotNull(SEARCH_MAXQTY)) {
+                searchMinQty = getParameterValue(SEARCH_MINQTY);
+                searchMaxQty = getParameterValue(SEARCH_MAXQTY);
+                if (!searchMaxQty.isEmpty() && !searchMinQty.isEmpty()) {
+                    System.out.println("1  firstHaving in  Search " + firstHaving);
+                    System.out.println("1  firstHaving in  searchMinQty-searchMinQty " + searchMinQty.isEmpty());
+                    System.out.println("1  firstHaving in  searchMinQty-searchMinQty " + searchMaxQty.isEmpty());
+                    if (firstHaving) {
+                        query += " having ";
+                    } else {
+                        firstHaving = false;
+                    }
+                    query += " qty > " + searchMinQty + " and qty < " + searchMaxQty;
+                }
+            }
+              searchMinQty = getParameterValue(SEARCH_MINQTY);
+                searchMaxQty = getParameterValue(SEARCH_MAXQTY);
+                System.out.println("MIN QTY ISEMPTY "+searchMinQty.isEmpty());
+                System.out.println("MAX QTY ISEMPTY "+searchMaxQty.isEmpty());
+                        
+            //search MIN qty >
+            if (!searchMinQty.isEmpty() && searchMaxQty.isEmpty()) {
+                System.out.println("in Search of MIN > value");
+                searchMinQty = getParameterValue(SEARCH_MINQTY);
+//                if (searchMinQty.isEmpty()) {
+                    // searchMaxQty = getParameterValue(SEARCH_MAXQTY);
+                    System.out.println("2  firstHaving in  Search " + firstHaving);
+                    if (firstHaving) {
+                        query += " having ";
+                    } else {
+                        firstHaving = false;
+                    }
+                    query += " qty > " + searchMinQty;
+//                }
+            }
+            //search MAX qty >
+             if (!searchMaxQty.isEmpty() && searchMinQty.isEmpty()) {
+                System.out.println("CHECK MAX QTY SEARCH");
+//                searchMinQty = getParameterValue(SEARCH_MAXQTY);
+                    searchMaxQty = getParameterValue(SEARCH_MAXQTY);
+                    System.out.println("3  firstHaving in  Search " + firstHaving);
+                    if (firstHaving) {
+                        query += " having ";
+                    } else {
+                        firstHaving = false;
+                    }
+                    query += " qty < " + searchMaxQty;
+            }
 
             // ORDER BY
             /*
@@ -192,37 +243,37 @@ public class EximGridAction extends EximGridBean {
                     && null == ORDER_IS_CONTACT_INFO_FOUND_COLUMN
                     && null == ORDER_HAS_TOO_MANY_SHIPMENTSCOLUMN
                     && null == ORDER_DATE) {
-                query += "order by qty desc, consignee_name ";
+                query += " order by qty desc, consignee_name ";
             } else if (checkIfParameterValueIsNotNull("order[0][column]")) {
                 orderFiled = getParameterValue("order[0][column]");
                 orderBy = getParameterValue(ORDER_BY);
 
                 if (orderFiled.equalsIgnoreCase(ORDER_DATE)) {
-                    query += "order by  sb_date " + orderBy + "  ";
+                    query += " order by  sb_date " + orderBy + "  ";
 
                 }
                 if (orderFiled.equalsIgnoreCase(ORDER_CONSIGNEE_NAME)) {
-                    query += "order by  consignee_name " + orderBy + "  ";
+                    query += " order by  consignee_name " + orderBy + "  ";
 
                 }
                 if (orderFiled.equalsIgnoreCase(ORDER_DESTINATION_PORT_COLUMN)) {
-                    query += "order by  destination_port " + orderBy + "  ";
+                    query += " order by  destination_port " + orderBy + "  ";
 
                 }
                 if (orderFiled.equalsIgnoreCase(ORDER_QUANTITY_COLUMN)) {
-                    query += "order by  qty " + orderBy + "  ";
+                    query += " order by  qty " + orderBy + "  ";
 
                 }
                 if (orderFiled.equalsIgnoreCase(ORDER_UNIT_COLUMN)) {
-                    query += "order by  unit " + orderBy + "  ";
+                    query += " order by  unit " + orderBy + "  ";
 
                 }
                 if (orderFiled.equalsIgnoreCase(ORDER_IS_CONTACT_INFO_FOUND_COLUMN)) {
-                    query += "order by  is_contact_info_found " + orderBy + "  ";
+                    query += " order by  is_contact_info_found " + orderBy + "  ";
 
                 }
                 if (orderFiled.equalsIgnoreCase(ORDER_HAS_TOO_MANY_SHIPMENTSCOLUMN)) {
-                    query += "order by  hasTooManyShipments " + orderBy + "  ";
+                    query += " order by  hasTooManyShipments " + orderBy + "  ";
 
                 }
                 //  query += "order by  " + orderFiled + " " + orderBy;
@@ -297,9 +348,9 @@ public class EximGridAction extends EximGridBean {
                 dataTablesRecords.add(dataTableObj);
             }
             obj.put("recordsTotal", getTotalRecords());
-            obj.put("recordsFiltered", priceInfo.size());
+            obj.put("recordsFilter", priceInfo.size());
             obj.put("data", dataTablesRecords);
-            obj.put("pagees", 244);
+            obj.put("pages", 244);
             // dataTablesRecords.add(obj);// obj.put("StudentList", jsonArray);
             //  obj.put(obj, NONE);
             System.out.println("^^^^^^^ " + obj.toJSONString());
@@ -344,6 +395,14 @@ public class EximGridAction extends EximGridBean {
         }
     }
 
+    private boolean isStringEmpty(String str) {
+        if (str.isEmpty()) {
+            return true;
+        }
+        else 
+            return false;
+    }
+
     private String getParameterValue(String str) {
         System.out.println("Parameter " + str + " has value " + request.getParameter(str));
 
@@ -367,7 +426,10 @@ public class EximGridAction extends EximGridBean {
     private String UNIT_COLUMN = "columns[4][search][value]";
     private String IS_CONTACT_INFO_FOUND_COLUMN = "columns[5][search][value]";
     private String HAS_TOO_MANY_SHIPMENTSCOLUMN = "columns[6][search][value]";
+    private String SEARCH_MINQTY = "minQty";
+    private String SEARCH_MAXQTY = "maxQty";
     private boolean firstSearch = true;
+    private boolean firstHaving = true;
 
     /* private String ORDER_DATE = "order[0][column]=0";
     private String ORDER_CONSIGNEE_NAME = "order[0][column]=1";
