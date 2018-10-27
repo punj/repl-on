@@ -40,9 +40,16 @@
             <artifactId>hibernate-core</artifactId>
             <version>4.3.11.Final</version>
         </dependency>
+        
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1</version>
+        </dependency>
+
 
         <!--jquery-->
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>com.jgeppert.struts2.jquery</groupId>
             <artifactId>struts2-jquery-plugin</artifactId>
             <version>3.7.0</version>
@@ -80,11 +87,11 @@
             <version>4.3.1.Final</version>
         </dependency>
 
-<dependency>
-    <groupId>org.apache.struts</groupId>
-    <artifactId>struts2-tiles-plugin</artifactId>
-    <version>2.5</version>
-</dependency>
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-tiles-plugin</artifactId>
+            <version>2.5</version>
+        </dependency>
 
 
     </dependencies>

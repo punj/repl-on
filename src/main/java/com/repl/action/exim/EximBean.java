@@ -38,6 +38,11 @@ public class EximBean extends ReplPagingBeanAll{
     
     private String ignoreSearchOnWebsite;
     
+    private String hasTooManyShipments;
+    
+   // private Double minPrice=0d, maxPrice=0d, avgPrice=0d;
+    //private String totalQty="0 MTS";
+    
     /* + "is_contact_info_found,\n" //4
                 + "phone,\n" //4
                 + "email,\n" //4
@@ -48,6 +53,7 @@ public class EximBean extends ReplPagingBeanAll{
         if(null==pageNo || pageNo <0){
            pageNo=0;
         }
+
     }
 
     public String getConsigneeName() {
@@ -254,10 +260,6 @@ public class EximBean extends ReplPagingBeanAll{
 
     
     
-    @Override
-    public String toString() {
-        return "EximBean{" + "consigneeName=" + consigneeName + ", total=" + total + ", consigneeCountry=" + consigneeCountry + ", consigneeAddress=" + consigneeAddress + ", is_contact_info_found=" + is_contact_info_found + ", phone=" + phone + ", email=" + email + ", web=" + web + ", comment=" + comment + ", pageNo=" + pageNo + ", shipmentsRecord=" + shipmentsRecord + ", countries=" + countries + ", searchCountry=" + searchCountry + ", searchConsigneeName=" + searchConsigneeName + ", orderByTotal=" + orderByTotal + '}';
-    }
 
     public List<Integer> getTotalPageNos() {
         return totalPageNos;
@@ -274,8 +276,24 @@ public class EximBean extends ReplPagingBeanAll{
     public void setIgnoreSearchOnWebsite(String ignoreSearchOnWebsite) {
         this.ignoreSearchOnWebsite = ignoreSearchOnWebsite;
     }
+
+    public String getHasTooManyShipments() {
+        return hasTooManyShipments;
+    }
+
+    public void setHasTooManyShipments(String hasTooManyShipments) {
+        this.hasTooManyShipments = hasTooManyShipments;
+    }
+
     
     
+    
+    @Override
+    public String toString() {
+        return "EximBean{" + "consigneeName=" + consigneeName + ", total=" + total + ", consigneeCountry=" + consigneeCountry + ", consigneeAddress=" + consigneeAddress + ", is_contact_info_found=" + is_contact_info_found + ", phone=" + phone + ", email=" + email + ", web=" + web + ", comment=" + comment + ", pageNo=" + pageNo + ", shipmentsRecord=" + shipmentsRecord + ", countries=" + countries + ", searchCountry=" + searchCountry + ", searchConsigneeName=" + searchConsigneeName + ", orderByTotal=" + orderByTotal + ", totalPageNos=" + totalPageNos + ", ignoreSearchOnWebsite=" + ignoreSearchOnWebsite + ", hasTooManyShipments=" + hasTooManyShipments + '}';
+    }
+    
+   
 
    
     

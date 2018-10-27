@@ -88,34 +88,73 @@ function loadDetailReportData() {
     var pageNo = getUrlParameter("pageNo")
     //console.log("page No " + getUrlParameter("pageNo"));
     $.ajax({
-        url: "Exim_loadConsigneeDetailReport.action",//?pageNo=" + pageNo + "&consigneeName=" + encodeURIComponent(document.getElementById("eximBean.consigneeName")).value,
-         data: {
-        consigneeName: document.getElementById("eximBean.consigneeName").value,
-        //uid: uid
-        //...
-    },
+        url: "Exim_loadConsigneeDetailReport.action", //?pageNo=" + pageNo + "&consigneeName=" + encodeURIComponent(document.getElementById("eximBean.consigneeName")).value,
+        //  async: false,
+        data: {
+            consigneeName: document.getElementById("eximBean.consigneeName").value,
+            //uid: uid
+            //...
+        },
         dataType: "html",
         success: function (data) {
-            
-            // var obj = jQuery.parseJSON(data);
-                        console.log(data);
 
-            $("#loader").hide();
-            $("#table1").html(data);
-//            alert(""+data);
-        }, error: function(){
+            // var obj = jQuery.parseJSON(data);
+            setTimeout($("#loader").hide(), 30009);
+            setTimeout($("#table1").html(data), 30000);
+//            $("#loader").hide();
+//            $("#table1").html(data);
+            //alert(data.length);
+            //  alert(""+data);
+        }, error: function () {
             // notify user of error or retry
-            alert("Try Again Refreshing Page!")
-      }
+            //   alert("Try Again Refreshing Page!")
+        }, complete: function (data) {
+            console.log(data);
+//                                   setTimeout( console.log(data), 5000);
+
+        }
+    });
+//$("#div1").load("Exim_loadConsigneeDetailReport.action");
+}
+function loadPriceDetail() {
+// alert('s')
+    console.clear();
+    $.ajax({
+        url: "Exim_getPriceInfos.action",
+        //  async: false,
+        data: {
+            consigneeName: document.getElementById("eximBean.consigneeName").value,
+            //uid: uid
+            //...
+        },
+        dataType: "json",
+        success: function (data) {
+//            $("#minPrice").val(data.minPrice);
+            document.getElementBy
+            $("#minPrice1").val(data.minPrice);
+//            $("#maxPrice").val(data.maxPrice);
+            $("#maxPrice").val(data.maxPrice);
+            $("#avgPrice1").val(data.avgPrice);
+            $("#totalQty").val(data.totalQty);
+//            $("#minPrice")
+            console.log("@@@@@@ " + (data.minPrice));
+        }, error: function () {
+            // notify user of error or retry
+            //   alert("Try Again Refreshing Page!")
+        }, complete: function (data) {
+            console.log(data);
+//                                   setTimeout( console.log(data), 5000);
+
+        }
     });
 //$("#div1").load("Exim_loadConsigneeDetailReport.action");
 }
 
 
 function setValue(buttonName) {
-    var value =  $("#" + buttonName).val();
+    var value = $("#" + buttonName).val();
     //document.getElementById("eximBean.comment").value += value;
-     CKEDITOR.instances['eximBean.comment'].insertHtml("<p><strong> <span class='marker'>"+ value+ "&nbsp;</span></strong></p>");
+    CKEDITOR.instances['eximBean.comment'].insertHtml("<p><strong> <span class='marker'>" + value + "&nbsp;</span></strong></p>");
 //    ('textarea#eximBean.comment').ckeditor().editor.insertText('eximBean.comment');
 }
 

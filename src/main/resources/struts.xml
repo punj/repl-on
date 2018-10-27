@@ -64,15 +64,28 @@
             <result name="input" type="tiles">/welcome.tiles</result>
              
             <result name="updated" type="redirectAction">
-              <param name="actionName">Exim_.action</param>
-      <param name="pageNo">${eximBean.pageNo}</param>
+                <param name="actionName">Exim_.action</param>
+                <param name="pageNo">${eximBean.pageNo}</param>
             </result>
 
             <!--<result name="input">/WEB-INF/jsp/Login.jsp</result>-->
-            <allowed-methods>updateConsigneeInfo, loadConsigneeDetailReport, generateTable</allowed-methods>
+            <allowed-methods>updateConsigneeInfo, loadConsigneeDetailReport, generateTable, getPriceInfos, autocomplete</allowed-methods>
         </action>
        
-
+        <action name="View_*"    method="{1}"  class="com.repl.action.exim.EximViewAction">
+            <interceptor-ref name="defaultStack"></interceptor-ref>
+            <result name="view">WEB-INF/jsp/view/view.jsp</result>
+            <result name="updated">WEB-INF/jsp/view/view.jsp</result>
+            <allowed-methods>view, autocomplete, setConsigneeValues, updateConsigneeInfo,</allowed-methods>
+        </action>
+       
+        <action name="Grid_*"    method="{1}"  class="com.repl.action.exim.EximGridAction">
+            <interceptor-ref name="defaultStack"></interceptor-ref>
+            <result name="eximView">WEB-INF/jsp/grid/view.jsp</result>
+            <result name="gridView">WEB-INF/jsp/grid/gridview.jsp</result>
+            <result name="updated">WEB-INF/jsp/view/view.jsp</result>
+            <allowed-methods>view, createGrid,loadGridData,test</allowed-methods>
+        </action>
     </package>
- 
-</struts>  
+  
+</struts>   

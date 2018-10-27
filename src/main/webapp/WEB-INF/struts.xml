@@ -15,14 +15,14 @@
     <constant name="struts.ui.theme" value="simple" />
     <constant name="struts.enable.DynamicMethodInvocation" 
               value="false" /> 
-    <constant name="struts.ui.theme" value="simple" /> 
+    <!--<constant name="struts.ui.theme" value="simple" />--> 
     <constant name="struts.devMode" value="true" /> 
    
     <constant name="struts.configuration.xml.reload" value="true" />
-    <constant name="struts.action.excludePattern" value="/servlet/.*?"></constant>
+    <!--<constant name="struts.action.excludePattern" value="/servlet/.*?"></constant>-->
   
     <!--<package name="default" extends="struts-default"   strict-method-invocation="true" >-->
-    <package name="default" extends="json-default"   strict-method-invocation="true" >
+    <package name="default" extends="struts-default"   strict-method-invocation="true" >
         <result-types>
             <result-type name="tiles" class="org.apache.struts2.views.tiles.TilesResult"/>
         </result-types>
@@ -59,16 +59,18 @@
         <action name="Exim_*"    method="{1}"  class="com.repl.action.exim.EximAction">
             <interceptor-ref name="defaultStack"></interceptor-ref>
             <!--<result name="view" type="tiles">/welcome.tiles</result>-->
-            <result name="view">WEB-INF/jsp/exim_db_view/view.jsp</result>
+            <result name="view">WEB-INF/jsp/exim_db_view/view.jsp
+                <param name="eximBean.searchCountry">${eximBean.searchCountry}</param>
+            </result>
             <result name="input" type="tiles">/welcome.tiles</result>
              
             <result name="updated" type="redirectAction">
-              <param name="actionName">Exim_.action</param>
-      <param name="pageNo">${eximBean.pageNo}</param>
+                <param name="actionName">Exim_.action</param>
+                <param name="pageNo">${eximBean.pageNo}</param>
             </result>
 
             <!--<result name="input">/WEB-INF/jsp/Login.jsp</result>-->
-            <allowed-methods>updateConsigneeInfo, loadConsigneeDetailReport, generateTable</allowed-methods>
+            <allowed-methods>updateConsigneeInfo, loadConsigneeDetailReport, generateTable, getPriceInfos</allowed-methods>
         </action>
        
 

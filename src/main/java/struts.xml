@@ -68,7 +68,7 @@
             </result>
 
             <!--<result name="input">/WEB-INF/jsp/Login.jsp</result>-->
-            <allowed-methods>updateConsigneeInfo, loadConsigneeDetailReport, generateTable</allowed-methods>
+            <allowed-methods>updateConsigneeInfo, loadConsigneeDetailReport, generateTable, getPriceInfos</allowed-methods>
         </action>
        
 

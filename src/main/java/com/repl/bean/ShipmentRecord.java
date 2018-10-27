@@ -111,7 +111,7 @@ public class ShipmentRecord{
 
     @Override
     public String toString() {
-        return "ShipmentRecord{" + "rowNumber=" + rowNumber + ", date=" + date + ", exporterName=" + exporterName + ", description=" + description + ", exportersCity=" + exportersCity + ", portOfDestination=" + portOfDestination + ", destination=" + destination + ", quantity=" + quantity + ", priceInINR=" + priceInINR + ", FOB=" + FOB + '}';
+        return "ShipmentRecord{" + "rowNumber=" + rowNumber + ", date=" + date + ", exporterName=" + exporterName + ", description=" + description + ", exportersCity=" + exportersCity + ", portOfDestination=" + portOfDestination + ", destination=" + destination + ", quantity=" + quantity + ", priceInINR=" + priceInINR + ", FOB=" + FOB + '}'+"\n";
     }
 
     

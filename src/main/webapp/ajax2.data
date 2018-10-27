@@ -1,0 +1,97 @@
+{
+  "recordsFiltered": 10,
+  "data": [
+    {
+      "unit": "KGS",
+      "hasTooManyShipments": "null",
+      "quantity": "4469217.5",
+      "destination_port": "BELAWAN, SUMATRA",
+      "consignee_name": "PT FORMITRA MULTI PRAKARSA",
+      "is_contact_info_found": "null",
+      "sb_date": "2018-03-01"
+    },
+    {
+      "unit": "KGS",
+      "hasTooManyShipments": "null",
+      "quantity": "2234215.0",
+      "destination_port": "BELAWAN, SUMATRA",
+      "consignee_name": "PT  SEGAR BAWANG BUMI",
+      "is_contact_info_found": "null",
+      "sb_date": "2018-03-01"
+    },
+    {
+      "unit": "KGS",
+      "hasTooManyShipments": "null",
+      "quantity": "1572318.6",
+      "destination_port": "SURABAYA",
+      "consignee_name": "PT KARUNIA ALAM SEGAR ",
+      "is_contact_info_found": "null",
+      "sb_date": "2017-09-08"
+    },
+    {
+      "unit": "KGS",
+      "hasTooManyShipments": "null",
+      "quantity": "1334517.5",
+      "destination_port": "BELAWAN, SUMATRA",
+      "consignee_name": "PT SEGAR BAWANG BUMI",
+      "is_contact_info_found": "null",
+      "sb_date": "2018-03-01"
+    },
+    {
+      "unit": "KGS",
+      "hasTooManyShipments": "null",
+      "quantity": "1276112.5",
+      "destination_port": "BELAWAN  SUMATRA",
+      "consignee_name": "UD ADIL LESTARI",
+      "is_contact_info_found": "null",
+      "sb_date": "2017-09-01"
+    },
+    {
+      "unit": "KGS",
+      "hasTooManyShipments": "null",
+      "quantity": "972000.0",
+      "destination_port": "ST PETERSBURG",
+      "consignee_name": "FRUIT AVENUE LLC",
+      "is_contact_info_found": "null",
+      "sb_date": "2018-03-14"
+    },
+    {
+      "unit": "KGS",
+      "hasTooManyShipments": "null",
+      "quantity": "956750.0",
+      "destination_port": "BELAWAN  SUMATRA",
+      "consignee_name": "PT JUMA BERLIAN EXIM ",
+      "is_contact_info_found": "null",
+      "sb_date": "2017-09-04"
+    },
+    {
+      "unit": "MTS",
+      "hasTooManyShipments": "null",
+      "quantity": "784155.868",
+      "destination_port": "BELAWAN, SUMATRA",
+      "consignee_name": "PT TIGAPILAR AGRO UTAMA",
+      "is_contact_info_found": "null",
+      "sb_date": "2018-03-23"
+    },
+    {
+      "unit": "KGS",
+      "hasTooManyShipments": "null",
+      "quantity": "606960.0",
+      "destination_port": "SURABAYA",
+      "consignee_name": "PT  PRAKARSA ALAM SEGAR",
+      "is_contact_info_found": "null",
+      "sb_date": "2017-09-11"
+    },
+    {
+      "unit": "KGS",
+      "hasTooManyShipments": "null",
+      "quantity": "582977.6",
+      "destination_port": "SURABAYA",
+      "consignee_name": "PT PRAKARSA ALAM SEGAR",
+      "is_contact_info_found": "null",
+      "sb_date": "2017-09-15"
+    }
+  ],
+  "draw": 1,
+  "recordsTotal": 10
+}

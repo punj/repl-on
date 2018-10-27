@@ -1,4 +1,7 @@
 <%@taglib  prefix="s"  uri="/struts-tags"%>
+<%@taglib  prefix="c"  uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page language="java" buffer="5000kb" autoFlush="false" %>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -12,9 +15,9 @@
 
         <!--<link href="web/images/favicon.png" rel="icon" type="image/x-icon"/>-->
 
-        <link href="web/css/bootstrap.min.css" rel="stylesheet">
-        <script src="web/js/bootstrap.min.js"/>
-        <script src = "web/js/jquerCy-1.10.1.min.js" />
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <!--<script src="web/js/bootstrap.min.js"/>-->
+        <script src = "web/js/jquery-1.10.1.min.js" />
         <link href = "https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel = "stylesheet" />
         <script src = "https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js" ></script>
         <link href="web/css/font-awesome.css" rel="stylesheet">
@@ -27,7 +30,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-        <script src="web/js/exim/view.js" type="text/javascript"></script>
+        <script src="js/exim/view.js" type="text/javascript"></script>
 
 
         <script src="https://cdn.ckeditor.com/4.10.1/standard/ckeditor.js"></script>
@@ -58,17 +61,38 @@
 
 
             }
+
+            .loader {
+                border: 16px solid #f3f3f3;
+                border-radius: 50%;
+                border-top: 16px solid #3498db;
+                width: 120px;
+                height: 120px;
+                -webkit-animation: spin 2s linear infinite; /* Safari */
+                animation: spin 2s linear infinite;
+            }
+
+            /* Safari */
+            @-webkit-keyframes spin {
+                0% { -webkit-transform: rotate(0deg); }
+                100% { -webkit-transform: rotate(360deg); }
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
         </style>
 
         <script>
             function submitSave() {
                 var v = document.getElementById('eximBean.is_contact_info_found').value;
-//               alert(v);
-//    alert($( "#eximBean.is_contact_info_found option:selected" ).text());
-//    var conceptName = $('#eximBean.is_contact_info_found').find(":selected").text();
-//    alert(conceptName);
+                //               alert(v);
+                //    alert($( "#eximBean.is_contact_info_found option:selected" ).text());
+                //    var conceptName = $('#eximBean.is_contact_info_found').find(":selected").text();
+                //    alert(conceptName);
                 if (v != -1) {
-//                    alert("do submit")
+                    //                    alert("do submit")
                     document.myform.action = "Exim_updateConsigneeInfo.action";
                     document.myform.submit();
                 } else {
@@ -82,22 +106,60 @@
                         document.getElementById('eximBean.is_contact_info_found').value = 'N';
                         document.getElementById('eximBean.selected').value = 'N';
                     }
-                   // alert("Contact Details Available?");
+                    // alert("Contact Details Available?");
                 }
             }
+            var searchCountry = "";
+            function getSelectValue(t) {
+                // alert(JSON.stringify($("#nextPage")))
+                var val = t.options[t.selectedIndex].text;
+                //alert(val);
+                document.getElementById('eximBean.searchCountry').value = val;
+                // alert(document.getElementById('eximBean.searchCountry').value);
+                searchCountry = document.getElementById('eximBean.searchCountry').value;
+                //            var sel = document.getElementById('eximBean.is_contact_info_found');
+                //            alert(sel.options[sel.selectedIndex].text);
+            }
 
+
+            function nextPage() {
+                alert("NextPage");
+                var pno = 0;
+                pno = document.getElementById("eximBean.pageNo").value;
+                pno = parseInt(pno) + 1;
+                //Exim.action
+                // alert(pno);
+                // alert(searchCountry);
+                var s = "Exim_updateConsigneeInfo.action?pageNo=" + pno + "&eximBean.searchCountry=" + searchCountry;
+                alert(s);
+                document.myform.method = "POST";
+                document.myform.action = s;
+                document.myform.submit();
+                //            var s = "Exim_updateConsigneeInfo.action?pageNo="+$("#eximBean.pageNo").val();
+                //  alert(s)
+                //   document.myform.submit();
+            }
         </script>
     </head>
+
     <body onload="setTitle();
-            loadDetailReportData();"  >
-        <!--<input type="button" onclick="loadDetailReportData()" value="ajax" />-->
+            loadDetailReportData();
+            loadPriceDetail();"  >
+
+
+        <input type="button" onclick="nextPage()" value="ajax" />
         <!--<input type="button" onclick="sgn123()" value="APPEND" />-->
         <s:head/>
-        <div class="container" >
-                            <%--<s:hidden id="eximBean.ignoreSearchOnWebsite" name="eximBean.ignoreSearchOnWebsite" value="%{eximBean.ignoreSearchOnWebsite}" />--%>
+        <%--<s:hidden id="eximBean.searchCountry" name="eximBean.searchCountry" />--%>
+
+
+
+        <div class="container">
+            <%--<s:hidden id="eximBean.ignoreSearchOnWebsite" name="eximBean.ignoreSearchOnWebsite" value="%{eximBean.ignoreSearchOnWebsite}" />--%>
 
             <s:url action="Exim.action" var="nextPage"  >
                 <s:param name="pageNo"><s:property value="%{pageNo+1}"/></s:param>
+                <s:param name="selectedCountry"><s:property value="#eximBean.searchCountry"/></s:param>
             </s:url>
             <%--<s:property value="%{nextPage}" />--%>
             <s:url action="Exim.action" var="previousPage" >
@@ -115,11 +177,12 @@
 
                 <s:hidden id="eximBean.consigneeName" name="eximBean.consigneeName" value="%{eximBean.consigneeName}" />
                 <s:hidden id="eximBean.pageNo" name="eximBean.pageNo" value="%{eximBean.pageNo}" />
+                <%--<s:hidden id="eximBean.searchCountry" name="eximBean.searchCountry" value="%{eximBean.searchCountry}" />--%>
                 <!--
                             <h4>Search   </h4>
-
+    
                 <div class="well">
-
+    
                     <div class="row">
                         <div class="col-sm-2">Company Name</div>
                         <div class="col-sm-5"> <input type="text" class="form-control" id="phone" placeholder="Phone"></div>
@@ -133,7 +196,7 @@
                                     <option>Oman</option>
                                 </select>
                             </div>
-
+    
                         </div>
                     </div>
                 </div--> <!--well over-->
@@ -144,6 +207,7 @@
 
                     </s:if>
                     <li class="next"><a href="<s:property value="#nextPage" />">Next</a></li>
+                    <!--<li class="next"><a href="#" onclick="nextPage(); return false;">Next > </a></li>-->
                 </ul>
                 <h4>Consignee Details</h4>
                 <s:if test="hasActionErrors()">
@@ -151,6 +215,28 @@
                         <s:actionerror/>
                     </div>
                 </s:if>
+                <h4>Search Section</h4>
+                <div class="well">
+                    <s:select
+                        cssClass="form-control"
+
+                        headerKey="-1" headerValue="Select"
+                        list="eximBean.countries" 
+                        value="eximBean.searchCountry"
+                        name="eximBean.searchCountry" 
+                        id="eximBean.searchCountry"
+                        />
+
+                    <!--s:select
+                        cssClass="form-control"
+                        onchange="getSelectValue(this);"
+                        headerKey="-1" headerValue="Select"
+                        list="eximBean.countries" 
+                        value="eximBean.searchCountry"
+                        name="eximBean.countries" 
+                        id="eximBean.countries"
+                        / -->
+                </div>
                 <div class="well">
 
                     <div class="container-fluid">
@@ -187,23 +273,29 @@
                         </div>  
 
                     </div> <!-- div fluid ends --> <!-- div fluid ends -->
-
-
                     <div class="row">
-
-                        <div class="col-lg-8">
+                        <div class="col-sm-4">
                             <div class="form-group">
-                                <label for="inputPassword" class="control-label col-sm-3">Address</label>
-                                <div class="col-lg-8" style="width:100%">
-                                    <!--<label class="control-label col-sm-2" style="text-align: left" for="consignee_address">CountryCountryCountryCountryCountryCountryCountryCountryCountryCountryCountry</label>-->
-                                    <s:label class="control-label col-lg-11" style="text-align: left" for="consigneeAddress" id="eximBean.consigneeAddress"  name="eximBean.consigneeAddress"
-                                             />
-
+                                <label for="minPrice" class="control-label col-xs-3"  style="text-align: right">Address</label>
+                                <div class="col-lg-9" style="">
+                                    <%--<s:textfield id="minPrice1" name="minPrice1" class="form-control"  readonly="true" />--%>
+                                    <%--<s:textfield id="totalQty" name="totalQty" class="form-control"  readonly="true" />--%>
+                                    <s:label class="control-label col-lg-11" style="text-align: left" for="consigneeAddress" id="eximBean.consigneeAddress"  name="eximBean.consigneeAddress" />
                                 </div>
                             </div>
                         </div>
-
+                        <div class="col-sm-5">
+                            <!--                            <div class="form-group">
+                                                            <label for="avgPrice" class="control-label col-xs-4">Total Qty</label>
+                                                            <div class="col-xs-7">
+                             
+                        </div>
+                    </div>-->
+                        </div>
+                         
                     </div>
+
+                   
 
 
                     <!--phone -->
@@ -244,12 +336,13 @@
                                 <label for="inputEmail" class="control-label col-xs-8" style="text-align: left">Contact Details Available?</label>
                                 <div class="col-xs-4">
                                     <div class="form-group">
+                                        <%--list="#{'Y':'Yes', 'N':'No','L':'Later'}"--%> 
 
                                         <s:select
                                             cssClass="form-control"
-
+                                            onchange="getSelectValue()"
                                             headerKey="-1" headerValue="Select"
-                                            list="#{'Y':'Yes', 'N':'No'}" 
+                                            list="#{'Y':'Yes', 'N':'No', 'L':'Later'}" 
 
                                             value="eximBean.selected"
                                             name="eximBean.is_contact_info_found" 
@@ -266,8 +359,96 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="minPrice" class="control-label col-xs-3">Total Qty</label>
+                                <div class="col-xs-9">
+                                    <%--<s:textfield id="minPrice1" name="minPrice1" class="form-control"  readonly="true" />--%>
+                                    <s:textfield id="totalQty" name="totalQty" class="form-control"  readonly="true" />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <!--                            <div class="form-group">
+                                                            <label for="avgPrice" class="control-label col-xs-4">Total Qty</label>
+                                                            <div class="col-xs-7">
+                            <s:textfield id="totalQty" name="totalQty" class="form-control"  readonly="true" />
+                        </div>
+                    </div>-->
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="maxPrice1" class="control-label col-xs-8" style="text-align: left">Many Shipments?</label>
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <s:select
+                                            cssClass="form-control"
+                                            headerKey="-1" headerValue="Select"
+                                            list="#{'M':'Micro :: 1 - 2','S':'Small :: 3-5','O':'Medium :: 6 - 10','B':'Big :: 11 - 15', 'L':'Large :: 16 - 20', 'G':'Giant :: >=21'}" 
+                                            value="eximBean.hasTooManyShipments"
+                                            name="eximBean.hasTooManyShipments" 
+                                            id="eximBean.hasTooManyShipments"
+                                            />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- price info -->
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="minPrice" class="control-label col-xs-3">Min Price</label>
+                                <div class="col-xs-9">
+                                    <!--<input type="email" class="form-control" id="inputEmail" placeholder="Email">-->
+                                    <s:textfield id="minPrice1" name="minPrice1" class="form-control"  readonly="true" />
+                                    <%--<s:label id="minPrice1" name="minPrice1" />--%>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <label for="avgPrice" class="control-label col-xs-4">Avg Price</label>
+                                <div class="col-xs-7">
+                                    <s:textfield id="avgPrice1" name="avgPrice1" class="form-control"  readonly="true" />
+                                    <%--<s:label id="avgPrice1" name="avgPrice1" />--%>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="maxPrice1" class="control-label col-xs-8" style="text-align: left">Max Price</label>
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <s:textfield id="maxPrice" name="maxPrice" class="form-control" readonly="true"  />
+
+                                        <%--<s:textfield name="maxPrice" id="maxPrice" readonly="true"/>--%>
+                                        <%--<s:label name="maxPrice" id="maxPrice" />--%>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
 
                     </div>
+
+
+
+
+
+
+
+
+
+
 
                     <div class="form-group">
 
@@ -309,13 +490,8 @@
 
 
                 <!--Table-->
-                <div id="table1" >
-                    <div id="loader">
-                        <p  style="text-align:center">Loading Data...<br/>
-                            <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
-                        </p>
-                    </div>
-                </div>
+                <div id="loader" class="loader"></div>
+                <div id="table1" > </div>
 
             </s:form>
             <ul class="pager">

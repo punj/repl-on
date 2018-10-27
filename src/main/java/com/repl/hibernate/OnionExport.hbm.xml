@@ -145,5 +145,8 @@
         <property name="isIrrelevant" type="string">
             <column name="isIrrelevant" length="2" />
         </property>
+        <property name="hasTooManyShipments" type="string">
+            <column name="hasTooManyShipments" length="2" />
+        </property>
     </class>
 </hibernate-mapping>
