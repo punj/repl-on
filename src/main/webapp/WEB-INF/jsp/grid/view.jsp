@@ -49,10 +49,10 @@
 //            
 //            alert( document.getElementById('consigneeName1'));
             $(document).ready(function () {
-               // alert("GRID VIEW.jsp");
-                    $('#loader1').hide();
+                // alert("GRID VIEW.jsp");
+                $('#loader1').hide();
 
-               
+
             });
         </script>
 
@@ -114,7 +114,7 @@
                         <s:actionerror/>
                     </div>
                 </s:if>
- 
+
                 <h4>Consignee Details</h4>
 
                 <div class="well">
@@ -185,6 +185,24 @@
                                 <div class="col-xs-9">
                                     <!--<input type="text" class="form-control" id="phone" placeholder="Phone">-->
                                     <s:textfield  name="eximBean.phone" class="form-control" id="eximBean.phone" placeholder="Phone"  />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="isBlackListed" class="control-label col-xs-3">Is Black Listed?</label>
+                                <div class="col-xs-9">
+                                    <!--<input type="text" class="form-control" id="phone" placeholder="Phone">-->
+                                    <s:select
+                                        cssClass="form-control"
+                                        headerKey="-1" headerValue="Select"
+                                        list="#{'Y':'Yes', 'N':'No'}" 
+
+                                        value="eximBean.isBlackListed"
+                                        name="eximBean.isBlackListed" 
+                                        id="eximBean.isBlackListed"
+                                        />
+
                                 </div>
                             </div>
                         </div>
@@ -352,7 +370,7 @@
 
                             <input type="button" value="Submit" class="col-xs-1" style="text-align: center;align:center;width:250px;height:40px;" onclick="submitSave()" />
                             <%--<s:submit value="Submit" class="col-xs-1" style="text-align: center;align:center;width:250px;height:40px;"/>--%>
-                           
+
                         </div>
                     </div>                    
 

@@ -153,6 +153,7 @@
                     },
                      stateSave: true,
                     scrollY: '52vh',
+                    scrollX: '52vh',
                     // scrollY: 200,
                     deferRender: true,
                     scroller: true,
@@ -173,7 +174,9 @@
                     {"data": "quantity"},
                     {"data": "unit"},
                     {"data": "is_contact_info_found"},
-                    {"data": "hasTooManyShipments"}
+                    {"data": "hasTooManyShipments"},
+                    {"data": "consignee_country"},
+                    {"data": "updatedOn"}
                     ],
                     "columnDefs": [
                     {
@@ -249,6 +252,8 @@
             table.column(4).visible(true, true);
             table.column(5).visible(true, true);
             table.column(6).visible(true, true);
+            table.column(7).visible(true, true);
+            table.column(8).visible(true, true);
 //                table.column(7).visible(true, true);
             // Apply the search
             table.columns().every(function () {
@@ -377,6 +382,8 @@
                     <th class="all">Unit</th>
                     <th class="all">Has contacted detail?</th>
                     <th class="all">Many Shipments?</th>
+                    <th class="all">Consignee Country</th>
+                    <th class="all">Consignee Country</th>
                     <!--<th class="all"> </th>-->
                 </tr>
             </thead>
@@ -389,6 +396,8 @@
                     <th class="all">Unit</th>
                     <th class="all">Has contacted detail?</th>
                     <th class="all">Many Shipments?</th>
+                    <th class="all">Consignee Country</th>
+                    <th class="all">Consignee Country</th>
                     <!--<th class="all"></th>-->
                 </tr>
             </tfoot>

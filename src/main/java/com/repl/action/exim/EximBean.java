@@ -21,6 +21,7 @@ public class EximBean extends ReplPagingBeanAll{
     private String consigneeCountry;
     private String consigneeAddress;
     private String is_contact_info_found;
+    private String isBlackListed;
     private String phone;
     private String email;
     private String web;
@@ -285,18 +286,17 @@ public class EximBean extends ReplPagingBeanAll{
         this.hasTooManyShipments = hasTooManyShipments;
     }
 
-    
-    
-    
+    public String getIsBlackListed() {
+        return isBlackListed;
+    }
+
+    public void setIsBlackListed(String isBlackListed) {
+        this.isBlackListed = isBlackListed;
+    }
+
     @Override
     public String toString() {
-        return "EximBean{" + "consigneeName=" + consigneeName + ", total=" + total + ", consigneeCountry=" + consigneeCountry + ", consigneeAddress=" + consigneeAddress + ", is_contact_info_found=" + is_contact_info_found + ", phone=" + phone + ", email=" + email + ", web=" + web + ", comment=" + comment + ", pageNo=" + pageNo + ", shipmentsRecord=" + shipmentsRecord + ", countries=" + countries + ", searchCountry=" + searchCountry + ", searchConsigneeName=" + searchConsigneeName + ", orderByTotal=" + orderByTotal + ", totalPageNos=" + totalPageNos + ", ignoreSearchOnWebsite=" + ignoreSearchOnWebsite + ", hasTooManyShipments=" + hasTooManyShipments + '}';
+        return "EximBean{" + "consigneeName=" + consigneeName + ", total=" + total + ", consigneeCountry=" + consigneeCountry + ", consigneeAddress=" + consigneeAddress + ", is_contact_info_found=" + is_contact_info_found + ", isBlackListed=" + isBlackListed + ", phone=" + phone + ", email=" + email + ", web=" + web + ", comment=" + comment + ", pageNo=" + pageNo + ", shipmentsRecord=" + shipmentsRecord + ", countries=" + countries + ", searchCountry=" + searchCountry + ", searchConsigneeName=" + searchConsigneeName + ", orderByTotal=" + orderByTotal + ", totalPageNos=" + totalPageNos + ", ignoreSearchOnWebsite=" + ignoreSearchOnWebsite + ", hasTooManyShipments=" + hasTooManyShipments + '}';
     }
-    
-   
-
-   
-    
-    
     
 }

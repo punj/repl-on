@@ -35,6 +35,7 @@ public class EximGridAction extends EximGridBean {
     }
 
     public String createGrid() throws Exception {
+        System.out.println("getQueryString ======>"+request.getQueryString());
         if (null != request.getParameter("cName")) {
             System.out.println("**cName PARAMETER VALUE****  " + request.getParameter("cName"));
 
@@ -85,7 +86,9 @@ public class EximGridAction extends EximGridBean {
                     + "DATE_FORMAT(sb_date, '%d/%m/%Y'),\n" //3
                     + "destination_port,\n" //4
                     + "ifnull(hasTooManyShipments,'Unkown'),\n" //5
-                    + "ifnull(is_contact_info_found,'Not Yet')\n" //6
+                    + "ifnull(is_contact_info_found,'Not Yet')\n," //6
+                    + "consignee_country,\n" //6
+                    + "date_format(updatedON, '%d/%m/%Y %l:%i %p') updatedon\n" //6
                     + "from onion_export\n"; //
 
             /* 
@@ -111,7 +114,7 @@ public class EximGridAction extends EximGridBean {
             // any search
             if (checkIfParameterValueIsNotNull("search[value]")) {
                 searchValue = getParameterValue("search[value]");
-                query += " UPPER(consignee_name) like '" + searchValue + "%' ";
+                query += " UPPER(consignee_name) like '%" + searchValue + "%' ";
                 firstSearch = false;
             }
 
@@ -173,7 +176,7 @@ public class EximGridAction extends EximGridBean {
             }
 
             query += "group by consignee_name, unit\n";
-            
+
             // QTY SEARCH between
             if (checkIfParameterValueIsNotNull(SEARCH_MINQTY) && checkIfParameterValueIsNotNull(SEARCH_MAXQTY)) {
                 searchMinQty = getParameterValue(SEARCH_MINQTY);
@@ -190,38 +193,38 @@ public class EximGridAction extends EximGridBean {
                     query += " qty > " + searchMinQty + " and qty < " + searchMaxQty;
                 }
             }
-              searchMinQty = getParameterValue(SEARCH_MINQTY);
-                searchMaxQty = getParameterValue(SEARCH_MAXQTY);
-                System.out.println("MIN QTY ISEMPTY "+searchMinQty.isEmpty());
-                System.out.println("MAX QTY ISEMPTY "+searchMaxQty.isEmpty());
-                        
+            searchMinQty = getParameterValue(SEARCH_MINQTY);
+            searchMaxQty = getParameterValue(SEARCH_MAXQTY);
+            System.out.println("MIN QTY ISEMPTY " + searchMinQty.isEmpty());
+            System.out.println("MAX QTY ISEMPTY " + searchMaxQty.isEmpty());
+
             //search MIN qty >
             if (!searchMinQty.isEmpty() && searchMaxQty.isEmpty()) {
                 System.out.println("in Search of MIN > value");
                 searchMinQty = getParameterValue(SEARCH_MINQTY);
 //                if (searchMinQty.isEmpty()) {
-                    // searchMaxQty = getParameterValue(SEARCH_MAXQTY);
-                    System.out.println("2  firstHaving in  Search " + firstHaving);
-                    if (firstHaving) {
-                        query += " having ";
-                    } else {
-                        firstHaving = false;
-                    }
-                    query += " qty > " + searchMinQty;
+                // searchMaxQty = getParameterValue(SEARCH_MAXQTY);
+                System.out.println("2  firstHaving in  Search " + firstHaving);
+                if (firstHaving) {
+                    query += " having ";
+                } else {
+                    firstHaving = false;
+                }
+                query += " qty > " + searchMinQty;
 //                }
             }
             //search MAX qty >
-             if (!searchMaxQty.isEmpty() && searchMinQty.isEmpty()) {
+            if (!searchMaxQty.isEmpty() && searchMinQty.isEmpty()) {
                 System.out.println("CHECK MAX QTY SEARCH");
 //                searchMinQty = getParameterValue(SEARCH_MAXQTY);
-                    searchMaxQty = getParameterValue(SEARCH_MAXQTY);
-                    System.out.println("3  firstHaving in  Search " + firstHaving);
-                    if (firstHaving) {
-                        query += " having ";
-                    } else {
-                        firstHaving = false;
-                    }
-                    query += " qty < " + searchMaxQty;
+                searchMaxQty = getParameterValue(SEARCH_MAXQTY);
+                System.out.println("3  firstHaving in  Search " + firstHaving);
+                if (firstHaving) {
+                    query += " having ";
+                } else {
+                    firstHaving = false;
+                }
+                query += " qty < " + searchMaxQty;
             }
 
             // ORDER BY
@@ -235,6 +238,7 @@ public class EximGridAction extends EximGridBean {
                 private String ORDER_BY = "order[0][dir]";
 
              */
+            
             if (null == ORDER_DATE
                     && null == ORDER_CONSIGNEE_NAME
                     && null == ORDER_DESTINATION_PORT_COLUMN
@@ -243,7 +247,7 @@ public class EximGridAction extends EximGridBean {
                     && null == ORDER_IS_CONTACT_INFO_FOUND_COLUMN
                     && null == ORDER_HAS_TOO_MANY_SHIPMENTSCOLUMN
                     && null == ORDER_DATE) {
-                query += " order by qty desc, consignee_name ";
+                query += " order by  UpdatedOn desc, qty desc, consignee_name ";
             } else if (checkIfParameterValueIsNotNull("order[0][column]")) {
                 orderFiled = getParameterValue("order[0][column]");
                 orderBy = getParameterValue(ORDER_BY);
@@ -274,6 +278,10 @@ public class EximGridAction extends EximGridBean {
                 }
                 if (orderFiled.equalsIgnoreCase(ORDER_HAS_TOO_MANY_SHIPMENTSCOLUMN)) {
                     query += " order by  hasTooManyShipments " + orderBy + "  ";
+
+                }
+                if (orderFiled.equalsIgnoreCase(ORDER_UPDATED_ON)) {
+                    query += " order by  updatedOn " + orderBy + "  ";
 
                 }
                 //  query += "order by  " + orderFiled + " " + orderBy;
@@ -341,6 +349,14 @@ public class EximGridAction extends EximGridBean {
 //                    System.out.println("is_contact_info_found " + String.valueOf(o[6]));
 
                 }
+                if (checkNull(String.valueOf(o[7]))) {
+                    dataTableObj.put("consignee_country", String.valueOf(o[7]));
+//                    System.out.println("is_contact_info_found " + String.valueOf(o[6]));
+                }
+                if (checkNull(String.valueOf(o[8]))) {
+                    dataTableObj.put("updatedOn", String.valueOf(o[8]));
+                    
+                }
 //                System.out.println("");
 
                 //  dataTableObj.put("consignee_name", String.valueOf(priceInfo.get(i)));
@@ -353,12 +369,15 @@ public class EximGridAction extends EximGridBean {
             obj.put("pages", 244);
             // dataTablesRecords.add(obj);// obj.put("StudentList", jsonArray);
             //  obj.put(obj, NONE);
-            System.out.println("^^^^^^^ " + obj.toJSONString());
+            // System.out.println("^^^^^^^ " + obj.toJSONString());
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(obj.toJSONString());
             response.flushBuffer();
         } catch (HibernateException e) {
             e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.flushBuffer();
+
         }
     }
 
@@ -398,9 +417,9 @@ public class EximGridAction extends EximGridBean {
     private boolean isStringEmpty(String str) {
         if (str.isEmpty()) {
             return true;
-        }
-        else 
+        } else {
             return false;
+        }
     }
 
     private String getParameterValue(String str) {
@@ -447,5 +466,6 @@ public class EximGridAction extends EximGridBean {
     private String ORDER_UNIT_COLUMN = "4";
     private String ORDER_IS_CONTACT_INFO_FOUND_COLUMN = "5";
     private String ORDER_HAS_TOO_MANY_SHIPMENTSCOLUMN = "6";
+    private String ORDER_UPDATED_ON = "8";
 
 }

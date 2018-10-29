@@ -6,7 +6,12 @@
 var value;
 var urlParameter;
 $(document).ready(function () {
- //   alert("#1#1#1" + window.location.href);
+
+    // date picker
+    // 
+    $('input[name="dates"]').daterangepicker();
+//date picker ends
+    //   alert("#1#1#1" + window.location.href);
     var url = new URL(window.location.href);
     urlParameter = url.searchParams.get("cName");
     setConsigneeValues(urlParameter)
@@ -49,8 +54,8 @@ function loadData() {
 }
 
 function setConsigneeValues(cName) {
-  //  alert(" setConsigneeValues ")
-  //  var value1 = $("#searchBuyer").getSelectedItemData();
+    //  alert(" setConsigneeValues ")
+    //  var value1 = $("#searchBuyer").getSelectedItemData();
 //    var value = $("#searchBuyer").val;
     console.log("sgn loadData value " + cName);
     $.ajax({

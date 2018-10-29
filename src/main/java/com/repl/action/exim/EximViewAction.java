@@ -107,8 +107,11 @@ public class EximViewAction extends EximViewBean {
                     + "round(max(item_rate_inv_curr),2) max_price,\n" //9
                     + "concat(round(sum(quantity),2),' ',unit) quantity,\n" //10
                     + "comment,\n" //11
+//                    + "comment,\n" //11
                     + "count(*) total_shipments,\n" //12
-                    + "consignee_address\n" //13
+                    + "consignee_address,\n" //13
+                    + "isFraud,\n" //13
+                    + "everContacted\n" //13
                     + "from onion_export where UPPER(consignee_name) like UPPER('" + cname + "');";
 
             System.out.println("queryqueryqueryqueryquery " + query);
@@ -183,6 +186,10 @@ public class EximViewAction extends EximViewBean {
                     studentJSON.put("consignee_address", String.valueOf(o[13]));
                     System.out.println("consignee_address " + String.valueOf(o[13]));
                 }
+                if (null != o[14]) {
+                    studentJSON.put("isFraud", String.valueOf(o[14]));
+                    System.out.println("isFraud " + String.valueOf(o[14]));
+                }
 //                studentJSON.put("name", String.valueOf(priceInfo.get(i)));
 //            studentJSON.put("age", o[1]);
                 // jsonArray.add(studentJSON);
@@ -213,6 +220,7 @@ public class EximViewAction extends EximViewBean {
             String web = "";
             String email = "";
             String comments = "";
+            String isBlackListed = "";
             if (null != request.getParameter("consigneeName")) {
 //                System.out.println("**PAGE NO PARAMETER VALUE****  " + request.getParameter("phrase"));
                 consigneeName = (request.getParameter("consigneeName"));
@@ -248,6 +256,11 @@ public class EximViewAction extends EximViewBean {
                 comments = (request.getParameter("comments"));
 
             }
+            if (null != request.getParameter("isBlackListed")) {
+//                System.out.println("**PAGE NO PARAMETER VALUE****  " + request.getParameter("phrase"));
+                isBlackListed = (request.getParameter("isBlackListed"));
+
+            }
 
             //  Session session = NewHibernateUtil.getSessionFactory().openSession();
             String query = "UPDATE OnionExport SET \n"
@@ -260,6 +273,9 @@ public class EximViewAction extends EximViewBean {
             }
             if (!hasTooManyShipments.equalsIgnoreCase("-1")) {
                 query += ",hasTooManyShipments = '" + hasTooManyShipments + "' \n";
+            }
+            if (!hasTooManyShipments.equalsIgnoreCase("-1")) {
+                query += ",isFraud = '" + isBlackListed + "' \n";
             }
             query += " WHERE consigneeName like ('%" + consigneeName+ "%')";
             System.out.println(" $$queryquery$$$$ " + query);

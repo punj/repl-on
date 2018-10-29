@@ -57,6 +57,7 @@ public class OnionExport  implements java.io.Serializable {
      private String email;
      private String isIrrelevant;
      private String hasTooManyShipments;
+     private String isFraud;
 
     public OnionExport() {
     }
@@ -438,6 +439,14 @@ public class OnionExport  implements java.io.Serializable {
 
     public void setHasTooManyShipments(String hasTooManyShipments) {
         this.hasTooManyShipments = hasTooManyShipments;
+    }
+
+    public String getIsFraud() {
+        return isFraud;
+    }
+
+    public void setIsFraud(String isFraud) {
+        this.isFraud = isFraud;
     }
 
 

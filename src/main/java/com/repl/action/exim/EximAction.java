@@ -341,6 +341,7 @@ public class EximAction extends EximBean {// implements SessionAware, ModelDrive
 
     public String updateConsigneeInfo() {
         try {
+            System.out.println("+eximBean.isBlackListed()**** " + eximBean.getIsBlackListed());
             System.out.println("+eximBean.getConsigneeName()**** " + eximBean.getConsigneeName());
             System.out.println("+eximBean.getPageNo()**** " + eximBean.getPageNo());
             System.out.println("+eximBean.getPhone()**** " + eximBean.getPhone());
@@ -366,7 +367,7 @@ public class EximAction extends EximBean {// implements SessionAware, ModelDrive
             Query querys = session.createQuery(query);
             int rr = querys.executeUpdate();
 
-            t.commit();
+          //  t.commit();
             //  session.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -568,7 +569,7 @@ public class EximAction extends EximBean {// implements SessionAware, ModelDrive
             }
             // obj.put("StudentList", jsonArray);
             //  obj.put(obj, NONE);
-            System.out.println("^^^^^^^ " + jsonArray.toString());
+           // System.out.println("^^^^^^^ " + jsonArray.toString());
             PrintWriter writer = null;
 
             writer = response.getWriter();

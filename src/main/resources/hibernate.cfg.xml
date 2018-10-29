@@ -5,13 +5,10 @@
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
     <!--<property name="hibernate.c3p0.timeout">10</property>-->
     <!--<property name="hibernate.c3p0.timeout">10</property>-->
-    
-<property name="hibernate.current_session_context_class">
+    <property name="hibernate.current_session_context_class">
 org.hibernate.context.internal.ThreadLocalSessionContext
 </property>
-
     <property name="hibernate.connection.release_mode">auto</property>
-
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/exim_data?zeroDateTimeBehavior=convertToNull</property>
     <property name="hibernate.connection.username">root</property>
