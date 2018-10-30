@@ -35,7 +35,7 @@ public class EximGridAction extends EximGridBean {
     }
 
     public String createGrid() throws Exception {
-        System.out.println("getQueryString ======>"+request.getQueryString());
+        System.out.println("getQueryString ======>" + request.getQueryString());
         if (null != request.getParameter("cName")) {
             System.out.println("**cName PARAMETER VALUE****  " + request.getParameter("cName"));
 
@@ -87,8 +87,10 @@ public class EximGridAction extends EximGridBean {
                     + "destination_port,\n" //4
                     + "ifnull(hasTooManyShipments,'Unkown'),\n" //5
                     + "ifnull(is_contact_info_found,'Not Yet')\n," //6
-                    + "consignee_country,\n" //6
-                    + "date_format(updatedON, '%d/%m/%Y %l:%i %p') updatedon\n" //6
+                    + "consignee_country,\n" //7
+                    + "date_format(updatedON, '%d/%m/%Y %l:%i %p') updatedon,\n" //8
+                    + "ifnull(isFraud,'?'),\n" //9
+                    + "ifnull(everContacted,'N')\n" //10
                     + "from onion_export\n"; //
 
             /* 
@@ -174,6 +176,28 @@ public class EximGridAction extends EximGridBean {
                 }
                 query += " UPPER(is_contact_info_found) like '" + searchValue + "%' ";
             }
+            // IS FRAUD
+            if (checkIfParameterValueIsNotNull(SEARCH_IS_FRAUD) && !getParameterValue(SEARCH_IS_FRAUD).isEmpty()) {
+                searchValue = getParameterValue(SEARCH_IS_FRAUD);
+                System.out.println("  firstSearch in unit Search " + firstSearch);
+                if (!firstSearch) {
+                    query += " AND ";
+                } else {
+                    firstSearch = false;
+                }
+                query += " UPPER(ISFRAUD) like '" + searchValue + "%' ";
+            }
+            // EVER CONTACTED
+            if (checkIfParameterValueIsNotNull(SEARCH_EVER_CONTACTED) && !getParameterValue(SEARCH_EVER_CONTACTED).isEmpty()) {
+                searchValue = getParameterValue(SEARCH_EVER_CONTACTED);
+                System.out.println("  firstSearch in unit Search " + firstSearch);
+                if (!firstSearch) {
+                    query += " AND ";
+                } else {
+                    firstSearch = false;
+                }
+                query += " UPPER(EVERCONTACTED) like '" + searchValue + "%' ";
+            }
 
             query += "group by consignee_name, unit\n";
 
@@ -238,7 +262,6 @@ public class EximGridAction extends EximGridBean {
                 private String ORDER_BY = "order[0][dir]";
 
              */
-            
             if (null == ORDER_DATE
                     && null == ORDER_CONSIGNEE_NAME
                     && null == ORDER_DESTINATION_PORT_COLUMN
@@ -355,7 +378,16 @@ public class EximGridAction extends EximGridBean {
                 }
                 if (checkNull(String.valueOf(o[8]))) {
                     dataTableObj.put("updatedOn", String.valueOf(o[8]));
-                    
+
+                }
+                if (checkNull(String.valueOf(o[9]))) {
+                    System.out.println("IS Fraud "+String.valueOf(o[9]));
+                    dataTableObj.put("isFraud", String.valueOf(o[9]));
+
+                }
+                if (checkNull(String.valueOf(o[10]))) {
+                    dataTableObj.put("everContacted", String.valueOf(o[10]));
+
                 }
 //                System.out.println("");
 
@@ -447,6 +479,8 @@ public class EximGridAction extends EximGridBean {
     private String HAS_TOO_MANY_SHIPMENTSCOLUMN = "columns[6][search][value]";
     private String SEARCH_MINQTY = "minQty";
     private String SEARCH_MAXQTY = "maxQty";
+    private String SEARCH_IS_FRAUD = "columns[9][search][value]";
+    private String SEARCH_EVER_CONTACTED = "columns[10][search][value]";
     private boolean firstSearch = true;
     private boolean firstHaving = true;
 

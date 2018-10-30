@@ -78,198 +78,202 @@
         <script>
 
             function format(d) {
-            return 'Full name: ' + d.first_name + ' ' + d.last_name + '<br>' +
-                    'Salary: ' + d.salary + '<br>' +
-                    'The child row can contain any data you wish, including links, images, inner tables etc.';
+                return 'Full name: ' + d.first_name + ' ' + d.last_name + '<br>' +
+                        'Salary: ' + d.salary + '<br>' +
+                        'The child row can contain any data you wish, including links, images, inner tables etc.';
             }
             $(document).ready(function () {
-            // Setup - add a text input to each footer cell
-            $('#example tfoot th').each(function (i) {
-            var title = $('#example thead th').eq($(this).index()).text();
-            $(this).html('<input type="text" placeholder="Search ' + title + '" data-index="' + i + '" />');
-            });
-            //
-            ;
-            var selected = [];
-            var table = $('#example').DataTable({
-            dom: 'Bfrtip',
+                // Setup - add a text input to each footer cell
+                $('#example tfoot th').each(function (i) {
+                    var title = $('#example thead th').eq($(this).index()).text();
+                    $(this).html('<input type="text" placeholder="Search ' + title + '" data-index="' + i + '" />');
+                });
+                //
+                ;
+                var selected = [];
+                var table = $('#example').DataTable({
+                    dom: 'Bfrtip',
                     buttons: [
-                            'colvis'
+                        'colvis'
                     ],
                     columnDefs: [
-                    {
+                        {
 //                            targets: -1,
 //                            visible: false
-                    }
+                        }
                     ],
                     select: true,
                     "processing": true,
                     "serverSide": true,
 //                   table.columns.adjust().draw( false );
                     "ajax"
-                    : {
-                    "url"
-                            : "Grid_loadGridData.action",
+                            : {
+                                "url"
+                                        : "Grid_loadGridData.action",
 //                        "url": "ajax2.data",
-                            "data"
-                            : function (data) {
+                                "data"
+                                        : function (data) {
 //                                            data.myKey = "myValue";
-                            data.minQty = $('#minQty').val();
-                            data.maxQty = $('#maxQty').val();
-                            console.log("!!!!! " + JSON.stringify(data));
-                            // d.custom = $('#myInput').val();
-                            // etc
-                            },
-                            /* success: function () {
-                             console.log("success")
-                             //                            table.draw();
-                             },*/
-                            dataFilter: function (data) {
-                            var json = jQuery.parseJSON(data);
-                            console.log('filter***  ' + json);
-                            console.log('filter***  ' + json.recordsTotal);
-                            json.recordsTotal = json.total;
-                            json.recordsFiltered = json.total;
+                                            data.minQty = $('#minQty').val();
+                                            data.maxQty = $('#maxQty').val();
+                                            console.log("!!!!! " + JSON.stringify(data));
+                                            // d.custom = $('#myInput').val();
+                                            // etc
+                                        },
+                                /* success: function () {
+                                 console.log("success")
+                                 //                            table.draw();
+                                 },*/
+                                dataFilter: function (data) {
+                                    var json = jQuery.parseJSON(data);
+                                    console.log('filter***  ' + json);
+                                    console.log('filter***  ' + json.recordsTotal);
+                                    json.recordsTotal = json.total;
+                                    json.recordsFiltered = json.total;
 //                            json.data = json.list;
 //                            console.log(JSON.stringify(json));
-                            return JSON.stringify(json); // return JSON string
-                            }
-                    },
+                                    return JSON.stringify(json); // return JSON string
+                                }
+                            },
                     "rowCallback": function (row, data) {
-                    if ($.inArray(data.DT_RowId, selected) !== - 1) {
-                    $(row).addClass('selected');
-                    }
+                        if ($.inArray(data.DT_RowId, selected) !== -1) {
+                            $(row).addClass('selected');
+                        }
                     },
                     // "pagingType": "full_numbers",
 
                     "paginate": {
-                    "first": "First",
-                            "previous": "Previous",
-                            "next": "Next",
-                            "last": "Last"
+                        "first": "First",
+                        "previous": "Previous",
+                        "next": "Next",
+                        "last": "Last"
                     },
                     language: {
-                    searchPlaceholder: "Search Consignee"
+                        searchPlaceholder: "Search Consignee"
                     },
-                     stateSave: true,
+                    stateSave: true,
                     scrollY: '52vh',
                     scrollX: '52vh',
                     // scrollY: 200,
                     deferRender: true,
                     scroller: true,
                     keys: true, fixedHeader: {
-                    //header: true,
-                    //  footer: true
+                        //header: true,
+                        //  footer: true
                     },
                     "responsive": true,
 //                    "ajax": "ajax.data",
 
                     buttons: [
-                            'copy', 'excel', 'pdf'
+                        'copy', 'excel', 'pdf'
                     ],
-                    "columns": [
-                    {"data": "sb_date"},
-                    {"data": "consignee_name"},
-                    {"data": "destination_port"},
-                    {"data": "quantity"},
-                    {"data": "unit"},
-                    {"data": "is_contact_info_found"},
-                    {"data": "hasTooManyShipments"},
-                    {"data": "consignee_country"},
-                    {"data": "updatedOn"}
-                    ],
+                            "columns": [
+                                {"data": "sb_date"},
+                                {"data": "consignee_name"},
+                                {"data": "destination_port"},
+                                {"data": "quantity"},
+                                {"data": "unit"},
+                                {"data": "is_contact_info_found"},
+                                {"data": "hasTooManyShipments"},
+                                {"data": "consignee_country"},
+                                {"data": "updatedOn"},
+                                {"data": "isFraud"},
+                                {"data": "everContacted"}
+                            ],
                     "columnDefs": [
-                    {
-                    "width": "2%",
+                        {
+                            "width": "2%",
                             "targets": [0],
                             "visible": true,
                             "searchable": false
-                    },
-                    {
-                    "targets": [1],
+                        },
+                        {
+                            "targets": [1],
                             "visible": true
-                    },
-                    {
-                    "targets": [2],
+                        },
+                        {
+                            "targets": [2],
                             "visible": true,
                             "searchable": false
-                    },
-                    {
-                    "targets": [3],
+                        },
+                        {
+                            "targets": [3],
                             "visible": true,
                             "searchable": false
-                    },
-                    {
-                    "targets": [4],
+                        },
+                        {
+                            "targets": [4],
                             "visible": false,
                             "searchable": false
-                    },
-                    {
-                    "targets": [5],
+                        },
+                        {
+                            "targets": [5],
                             "visible": false,
                             "searchable": false
-                    },
-                    {
-                    "targets": [6],
+                        },
+                        {
+                            "targets": [6],
                             "visible": false,
                             "searchable": false
-                    }
+                        }
                     ]
-            });
-            // add row
+                });
+                // add row
 
 
-            // on click
+                // on click
 
-            $('#example tbody').on('click', 'tr', function () {
-            //alert('sgn selected ')
-            console.log("%%%%%%%%% " + JSON.stringify(table.row(this).data()));
-            var cname1 = table.row(this).data().consignee_name;
-            document.getElementById('loadNewPage').src = "Grid_createGrid.action?cName=" + cname1;
-            console.log("URL for IFRAME " + document.getElementById('loadNewPage').src);
-            $("#modalTitle").html(cname1);
-            //  callPage();
-            $('#myModal').modal('show');
-            if ($(this).hasClass('selected')) {
-            $(this).removeClass('selected');
-            } else {
-            table.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-            }
-            });
-            $('#button').click(function () {
-            table.row('.selected').remove().draw(false);
-            });
-            $('#showBtn').click(function () {
-            //alert("ss")
-            //table.columns.adjust().draw(false);
-            });
-            //  table.column(0).width("2%");
-            table.column(0).visible(true, true);
-            table.column(1).visible(true, true);
-            table.column(2).visible(true, true);
-            table.column(3).visible(true, true);
-            table.column(4).visible(true, true);
-            table.column(5).visible(true, true);
-            table.column(6).visible(true, true);
-            table.column(7).visible(true, true);
-            table.column(8).visible(true, true);
+                $('#example tbody').on('click', 'tr', function () {
+                    //alert('sgn selected ')
+                    console.log("%%%%%%%%% " + JSON.stringify(table.row(this).data()));
+                    var cname1 = table.row(this).data().consignee_name;
+                    document.getElementById('loadNewPage').src = "Grid_createGrid.action?cName=" + cname1;
+                    console.log("URL for IFRAME " + document.getElementById('loadNewPage').src);
+                    $("#modalTitle").html(cname1);
+                    //  callPage();
+                    $('#myModal').modal('show');
+                    if ($(this).hasClass('selected')) {
+                        $(this).removeClass('selected');
+                    } else {
+                        table.$('tr.selected').removeClass('selected');
+                        $(this).addClass('selected');
+                    }
+                });
+                $('#button').click(function () {
+                    table.row('.selected').remove().draw(false);
+                });
+                $('#showBtn').click(function () {
+                    //alert("ss")
+                    //table.columns.adjust().draw(false);
+                });
+                //  table.column(0).width("2%");
+                table.column(0).visible(true, true);
+                table.column(1).visible(true, true);
+                table.column(2).visible(true, true);
+                table.column(3).visible(true, true);
+                table.column(4).visible(true, true);
+                table.column(5).visible(true, true);
+                table.column(6).visible(true, true);
+                table.column(7).visible(true, true);
+                table.column(8).visible(true, true);
+                table.column(9).visible(true, true);
+                table.column(10).visible(true, true);
 //                table.column(7).visible(true, true);
-            // Apply the search
-            table.columns().every(function () {
-            var that = this;
-            console.log("that  " + that);
-            console.log("this  " + this);
-            $('input', this.footer()).on('keyup change', function () {
-            if (that.search() !== this.value) {
-            that
-                    .search(this.value)
-                    .draw();
-            }
-            });
-            })
+                // Apply the search
+                table.columns().every(function () {
+                    var that = this;
+//            console.log("that  " + that);
+//            console.log("this  " + this);
+                    $('input', this.footer()).on('keyup change', function () {
+                        if (that.search() !== this.value) {
+                            that
+                                    .search(this.value)
+                                    .draw();
+                        }
+                    });
+                })
 
-                    // loader hide
+                // loader hide
 //                $('#loadNewPage').on('load', function () {
 //                    alert('loader hide event')
 //
@@ -278,21 +282,28 @@
 
 
 
-                    //search custom
-                    $('#search').on('click change', function (event) {
-            event.preventDefault();
-            /* if ($('#minQty').val() == "")
-             {
-             $('#minQty').focus();
-             } else if ($('#maxQty').val() == "")
-             {
-             $('#maxQty').focus();
-             } else
-             {
-             table.draw();
-             }*/
-            table.draw();
-            });
+                //search custom
+                $('#search').on('click change', function (event) {
+                    event.preventDefault();
+                    /* if ($('#minQty').val() == "")
+                     {
+                     $('#minQty').focus();
+                     } else if ($('#maxQty').val() == "")
+                     {
+                     $('#maxQty').focus();
+                     } else
+                     {
+                     table.draw();
+                     }*/
+                    table.draw();
+                });
+
+
+
+                $("#myModal").on("hidden.bs.modal", function () {
+                    // put your default event here
+                    table.draw();
+                });
             }); // ready ends
 
 
@@ -380,10 +391,12 @@
                     <th class="all">Port</th>
                     <th class="all">Quantity</th>
                     <th class="all">Unit</th>
-                    <th class="all">Has contacted detail?</th>
+                    <th class="all">Contact Found?</th>
                     <th class="all">Many Shipments?</th>
                     <th class="all">Consignee Country</th>
-                    <th class="all">Consignee Country</th>
+                    <th class="all">Updated On</th>
+                    <th class="all">Is Fraud?</th>
+                    <th class="all">Ever Contacted?</th>
                     <!--<th class="all"> </th>-->
                 </tr>
             </thead>
@@ -397,7 +410,9 @@
                     <th class="all">Has contacted detail?</th>
                     <th class="all">Many Shipments?</th>
                     <th class="all">Consignee Country</th>
-                    <th class="all">Consignee Country</th>
+                    <th class="all">Updated On</th>
+                    <th class="all">Is Fraud?</th>
+                    <th class="all">Ever Contacted?</th>
                     <!--<th class="all"></th>-->
                 </tr>
             </tfoot>

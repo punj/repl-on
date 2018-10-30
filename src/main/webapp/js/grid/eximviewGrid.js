@@ -9,7 +9,7 @@ $(document).ready(function () {
 
     // date picker
     // 
-    $('input[name="dates"]').daterangepicker();
+ //   $('input[name="dates"]').daterangepicker();
 //date picker ends
     //   alert("#1#1#1" + window.location.href);
     var url = new URL(window.location.href);
@@ -78,6 +78,9 @@ function setConsigneeValues(cName) {
             var phone = ('phone' in data) ? data.phone : "";
             var comment = ('comment' in data) ? data.comment : "";
             var is_contact_info_found = ('is_contact_info_found' in data) ? data.is_contact_info_found : "-1";
+            var isFraud = ('isFraud' in data) ? data.isFraud : "-1";
+            var everContacted = ('everContacted' in data) ? data.everContacted : "-1";
+          //  alert('isFraud '+isFraud );
             console.log(" data.hasTooManyShipments " + data.hasTooManyShipments);
             console.log(" data.is_contact_info_found " + data.is_contact_info_found);
 //            $("#eximBean.consigneeName1").text(data.consignee_name);
@@ -95,12 +98,13 @@ function setConsigneeValues(cName) {
             document.getElementById("avgPrice1").value = data.avg_price;
             document.getElementById("minPrice1").value = data.min_price;
             document.getElementById("totalQty").value = data.quantity;
-            document.getElementById("totalQty").value = data.quantity;
-            document.getElementById("totalQty").value = data.quantity;
+//            document.getElementById("totalQty").value = data.quantity;
+            document.getElementById("eximBean.isBlackListed").value = isFraud;
+            document.getElementById("eximBean.everContacted").value = everContacted;
 
-            document.getElementById('eximBean.hasTooManyShipments').value = hasTooManyShipments;
-            document.getElementById('eximBean.hasTooManyShipments').value = hasTooManyShipments;
-            document.getElementById('eximBean.hasTooManyShipments').value = hasTooManyShipments;
+//            document.getElementById('eximBean.hasTooManyShipments').value = hasTooManyShipments;
+//            document.getElementById('eximBean.hasTooManyShipments').value = hasTooManyShipments;
+//            document.getElementById('eximBean.hasTooManyShipments').value = hasTooManyShipments;
             document.getElementById('eximBean.hasTooManyShipments').value = hasTooManyShipments;
             CKEDITOR.instances['eximBean.comment'].insertHtml(comment);
             /* var dd = document.getElementById('eximBean.hasTooManyShipments');
@@ -191,8 +195,10 @@ function submitSave() {
     var comment = CKEDITOR.instances['eximBean.comment'].getData();
     var is_contact_info_found = document.getElementById('eximBean.is_contact_info_found').value;
     var hasTooManyShipments = document.getElementById('eximBean.hasTooManyShipments').value;
+    var isBlackListed = document.getElementById('eximBean.isBlackListed').value;
+    var everContacted = document.getElementById('eximBean.everContacted').value;
 
-    //    alert("*** "+document.getElementById('eximBean.is_contact_info_found').value);//                                    alert("do submit")
+        //alert("*** "+document.getElementById('eximBean.isBlackListed').value);//                                    alert("do submit")
     var params = {
         consigneeName: $("#consigneeName1").val(),
         is_contact_info_found: is_contact_info_found,
@@ -240,7 +246,9 @@ function submitSave() {
             phone: document.getElementById('eximBean.phone').value,
             web: document.getElementById('eximBean.web').value,
             email: document.getElementById('eximBean.email').value,
-            comments: comment
+            comments: comment,
+            isBlackListed: isBlackListed,
+            everContacted: everContacted,
         },
         dataType: "text",
         success: function (data) {

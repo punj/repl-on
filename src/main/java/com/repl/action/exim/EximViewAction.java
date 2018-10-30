@@ -110,8 +110,8 @@ public class EximViewAction extends EximViewBean {
 //                    + "comment,\n" //11
                     + "count(*) total_shipments,\n" //12
                     + "consignee_address,\n" //13
-                    + "isFraud,\n" //13
-                    + "everContacted\n" //13
+                    + "isFraud,\n" //14
+                    + "everContacted\n" //15
                     + "from onion_export where UPPER(consignee_name) like UPPER('" + cname + "');";
 
             System.out.println("queryqueryqueryqueryquery " + query);
@@ -190,6 +190,10 @@ public class EximViewAction extends EximViewBean {
                     studentJSON.put("isFraud", String.valueOf(o[14]));
                     System.out.println("isFraud " + String.valueOf(o[14]));
                 }
+                if (null != o[15]) {
+                    studentJSON.put("everContacted", String.valueOf(o[15]));
+                    System.out.println("everContacted " + String.valueOf(o[15]));
+                }
 //                studentJSON.put("name", String.valueOf(priceInfo.get(i)));
 //            studentJSON.put("age", o[1]);
                 // jsonArray.add(studentJSON);
@@ -221,6 +225,7 @@ public class EximViewAction extends EximViewBean {
             String email = "";
             String comments = "";
             String isBlackListed = "";
+            String everContacted = "";
             if (null != request.getParameter("consigneeName")) {
 //                System.out.println("**PAGE NO PARAMETER VALUE****  " + request.getParameter("phrase"));
                 consigneeName = (request.getParameter("consigneeName"));
@@ -261,6 +266,11 @@ public class EximViewAction extends EximViewBean {
                 isBlackListed = (request.getParameter("isBlackListed"));
 
             }
+            if (null != request.getParameter("everContacted")) {
+//                System.out.println("**PAGE NO PARAMETER VALUE****  " + request.getParameter("phrase"));
+                everContacted = (request.getParameter("everContacted"));
+
+            }
 
             //  Session session = NewHibernateUtil.getSessionFactory().openSession();
             String query = "UPDATE OnionExport SET \n"
@@ -274,8 +284,11 @@ public class EximViewAction extends EximViewBean {
             if (!hasTooManyShipments.equalsIgnoreCase("-1")) {
                 query += ",hasTooManyShipments = '" + hasTooManyShipments + "' \n";
             }
-            if (!hasTooManyShipments.equalsIgnoreCase("-1")) {
+            if (!isBlackListed.equalsIgnoreCase("-1")) {
                 query += ",isFraud = '" + isBlackListed + "' \n";
+            }
+            if (!everContacted.equalsIgnoreCase("-1")) {
+                query += ",everContacted = '" + everContacted + "' \n";
             }
             query += " WHERE consigneeName like ('%" + consigneeName+ "%')";
             System.out.println(" $$queryquery$$$$ " + query);

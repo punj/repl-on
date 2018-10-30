@@ -205,6 +205,7 @@
 
                                 </div>
                             </div>
+
                         </div>
 
                     </div>
@@ -335,6 +336,24 @@
 
                         </div>
 
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="everContacted" class="control-label col-xs-3">Ever Contacted?</label>
+                                <div class="col-xs-9">
+                                    <s:select
+                                        cssClass="form-control"
+                                        headerKey="-1" headerValue="Select"
+                                        list="#{'Y':'Yes', 'N':'No'}" 
+
+                                        value="eximBean.everContacted"
+                                        name="eximBean.everContacted" 
+                                        id="eximBean.everContacted"
+                                        />
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
 
