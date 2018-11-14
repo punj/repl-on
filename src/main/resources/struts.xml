@@ -86,6 +86,14 @@
             <result name="updated">WEB-INF/jsp/view/view.jsp</result>
             <allowed-methods>view, createGrid,loadGridData,test</allowed-methods>
         </action>
+       
+        <action name="Reminder_*"    method="{1}"  class="com.repl.action.exim.ReminderAction">
+            <interceptor-ref name="defaultStack"></interceptor-ref>
+            <result name="reminder">WEB-INF/jsp/grid/view.jsp</result>
+            <result name="gridView">WEB-INF/jsp/grid/gridview.jsp</result>
+            <result name="updated">WEB-INF/jsp/view/view.jsp</result>
+            <allowed-methods>execute</allowed-methods>
+        </action>
     </package>
   
 </struts>   

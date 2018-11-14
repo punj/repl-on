@@ -44,16 +44,77 @@
 
 
         <script src="https://cdn.ckeditor.com/4.10.1/standard/ckeditor.js"></script>
+
+
+
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <!--<link rel="stylesheet" href="/resources/demos/style.css">-->
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
+
         <script>
 //            alert(window.frames['loadNewPage'].contentDocument.document.getElementById('consigneeName1').value());
 //            
+            var changeDetected = false;
 //            alert( document.getElementById('consigneeName1'));
             $(document).ready(function () {
                 // alert("GRID VIEW.jsp");
                 $('#loader1').hide();
 
+                $('#timepicker').timepicker({
+                    timeFormat: 'HH:mm',
+                    interval: 15,
+                    // minTime: '1',
+                    //maxTime: '6:00pm',
+                    defaultTime: '08:00',
+                    //startTime: '10:00',
+                    dynamic: false,
+                    dropdown: true,
+                    scrollbar: true
+                });
 
+
+                var $form = $('form'),
+                        origForm = $form.serialize();
+
+                $('form :input').on('change input', function () {
+//                    alert('changed ');
+                    $('.change-message').toggle($form.serialize() !== origForm);
+                    changeDetected = $form.serialize() !== origForm;
+                });
             });
+
+            // //1300.7.Aug.2015@followupthen.com
+            // 31.Oct.2018
+            $(function () {
+                $("#datepicker").datepicker({
+                    changeMonth: true,
+                    changeYear: true,
+                    minDate: 0,
+                    dateFormat: 'd.M.yy',
+                    // setDate: 1,
+//                            'dd/mm/yy' 
+
+                });
+            });
+
+            function copyFunction() {
+                var copyText = document.getElementById("consigneeName1");
+                copyText.select();
+                document.execCommand("copy");
+
+                var tooltip = document.getElementById("myTooltip");
+                tooltip.innerHTML = "Copied: " + copyText.value;
+            }
+
+            function outFunc() {
+                var tooltip = document.getElementById("myTooltip");
+                tooltip.innerHTML = "Copy to clipboard";
+            }
         </script>
 
         <style>
@@ -71,6 +132,108 @@
                 100% { transform: rotate(360deg); }
             }
 
+            /* button in textfiled starts*/
+            body {
+                background-color: #f1f1f1;
+                font-family: Helvetica,Arial,Verdana;
+
+            }
+            h1 {
+                color: green;
+                text-align: center;
+            }
+            .redfamily {
+                color: red;	
+            }
+            .search-box,.close-icon,.search-wrapper {
+                position: relative;
+                padding: 10px;
+            }
+            .search-wrapper {
+                width: 500px;
+                margin: auto;
+                margin-top: 50px;
+            }
+            .search-box {
+                width: 80%;
+                border: 1px solid #ccc;
+                outline: 0;
+                border-radius: 15px;
+            }
+            .search-box:consigneeName1 {
+                box-shadow: 0 0 15px 5px #b0e0ee;
+                border: 2px solid #bebede;
+            }
+            .close-icon {
+                border:1px solid transparent;
+                background-color: transparent;
+                display: inline-block;
+                vertical-align: middle;
+                outline: 0;
+                cursor: pointer;
+            }
+            .close-icon:after {
+                /*content: "X";*/
+                display: block;
+                width: 15px;
+                height: 15px;
+                position: absolute;
+                background-color: #FA9595;
+                z-index:1;
+                right: 35px;
+                top: 0;
+                bottom: 0;
+                margin: auto;
+                padding: 2px;
+                border-radius: 50%;
+                text-align: center;
+                color: white;
+                font-weight: normal;
+                font-size: 12px;
+                box-shadow: 0 0 2px #E50F0F;
+                cursor: pointer;
+            }
+            .search-box:not(:valid) ~ .close-icon {
+                display: none;
+            }
+            /* button in textfiled end*/
+            .tooltip {
+                position: relative;
+                display: inline-block;
+            }
+
+            .tooltip .tooltiptext {
+                visibility: hidden;
+                width: 140px;
+                background-color: #555;
+                color: #fff;
+                text-align: center;
+                border-radius: 6px;
+                padding: 5px;
+                position: absolute;
+                z-index: 1;
+                bottom: 150%;
+                left: 50%;
+                margin-left: -75px;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .tooltip .tooltiptext::after {
+                content: "";
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                margin-left: -5px;
+                border-width: 5px;
+                border-style: solid;
+                border-color: #555 transparent transparent transparent;
+            }
+
+            .tooltip:hover .tooltiptext {
+                visibility: visible;
+                opacity: 1;
+            }
         </style>
     </head>
     <body>
@@ -125,13 +288,20 @@
                                 <label class="control-label col-sm-3" for="consignee_name">Consignee Name </label>
                             </div>
                             <div class="col-sm-4">
-                                <p class="form-control-static">
-                                    <a class="ex2" target="_blank"  href="<s:property value="#searchOnGoogle" />">
-                                        <s:textfield id="consigneeName1"  class="form-control" var="consigneeName1" name="consigneeName1"  readonly="true"/>
-                                        <%--<s:label id="eximBean.consigneeName" name="eximBean.consigneeName"   class="control-label col-sm-9" style="text-align: left" />--%>
-                                    </a>
+                                <!--                                <p class="form-control-static">
+                                                                    <a class="ex2" target="_blank"  href="<s:property value="#searchOnGoogle" />">
+                                <%--<s:textfield id="consigneeName1"  class="form-control" var="consigneeName1" name="consigneeName1"  readonly="true"/>--%>
+                            </a>
 
-                                    <!--<label class="badge" for="consignee_name"><s:label   id="eximBean.total" name="eximBean.total"/> </label></p>-->
+                                <%--<s:label   id="eximBean.total" name="eximBean.total"/>--%>
+                            </p>-->
+                                <s:textfield id="consigneeName1"   class="search-box" var="consigneeName1" name="consigneeName1"  />
+                                <!--<input type="text" name="focus" required class="search-box" placeholder="Enter search term" />-->
+
+                                <button class="close-icon" type="button" onclick="copyFunction();"><i class="fa fa-copy"></i>
+                                    <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+                                </button>
+
                             </div>
 
                             <div  class="col-xs-1">                        
@@ -354,6 +524,18 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="comment">Set Reminder</label><br/>
+                                <div class="col-xs-9">
+                                    <p><input type="text" id="datepicker"  class="form-control col-sm-4"  placeholder="Date">
+                                        <input type="text" id="timepicker"  class="form-control  col-sm-3" placeholder="Time" ></p>
+                                    <input type="button" class="btn btn-primary" value="Set Reminder" onclick="setReminder()" />  
+                                    <p  id="inlineloader"><i class="fa fa-spinner fa-spin"></i> Setting up reminder...Please wait</p>
+                                    <!--<p></p>-->
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
 
@@ -378,7 +560,319 @@
                         <!--                        <textarea class="form-control" rows="5" id="comment"></textarea>-->
                         <s:textarea id="eximBean.comment" name="eximBean.comment" cssClass="form-control" rows="6"/>
                         <script>
-                            CKEDITOR.replace('eximBean.comment');
+                            var editor = CKEDITOR.replace('eximBean.comment');
+                            editor.addCommand("addTimeStamp", {
+                                exec: function (edt) {
+                                    //  alert(edt.getData());
+                                    // setValue1();
+
+                                    var today = new Date();
+                                    var dd = today.getDate();
+                                    var mm = today.getMonth() + 1; //January is 0!
+                                    var yyyy = today.getFullYear();
+
+                                    if (dd < 10) {
+                                        dd = '0' + dd
+                                    }
+
+                                    if (mm < 10) {
+                                        mm = '0' + mm
+                                    }
+                                    // get am pm
+                                    var hours = today.getHours();
+                                    var minutes = today.getMinutes();
+                                    var ampm = hours >= 12 ? 'PM' : 'AM';
+                                    hours = hours % 12;
+                                    hours = hours ? hours : 12; // the hour '0' should be '12'
+                                    minutes = minutes < 10 ? '0' + minutes : minutes;
+                                    var strTime = hours + ':' + minutes + ' ' + ampm;
+                                    // get am pm ends
+                                    today = dd + '/' + mm + '/' + yyyy + '  ' + strTime;
+                                    // console.log(today);
+                                    //document.getElementById("eximBean.comment").value += value;
+                                    CKEDITOR.instances['eximBean.comment'].insertHtml("<p><strong> <span class='marker'>" + today + "&nbsp;</span></strong></p>");
+                                }
+                            });
+                            editor.ui.addButton('SuperButton', {
+                                label: "Time Stamp",
+                                command: 'addTimeStamp',
+                                toolbar: 'insert',
+                                icon: 'http://localhost:8080/Onion-1.0-SNAPSHOT/images/calendar.png'
+                            });
+                            editor.addCommand("insertCountryCode", {
+                                //allowedContent: "span[contenteditable](*)"
+                                //, requiredContent: "span[contenteditable](*)"
+                                //,
+                                exec: function (editor, id) {
+                                    console.log("insertCountryCode.exec(id: " + id + ")")
+                                    //editor.insertElement(CKEDITOR.dom.element.createFromHtml('<span class="variable" contenteditable="false">[ ' + id + ' ]</span>'));
+                                }
+                            });
+                            editor.ui.addRichCombo("InsertCountryCode", {
+                                label: "ISD Code"
+                                , title: "ISD Code"
+                                , multiSelect: false
+//                                , toolbar: "basicstyles,0"
+                                , toolbar: "insert"
+                                , init: function () {
+                                    console.log("InsertVariableSelect.init")
+                                    this.add('+93', 'Afghanistan');
+                                    this.add('+358', 'Aland Islands');
+                                    this.add('+355', 'Albania');
+                                    this.add('+213', 'Algeria');
+                                    this.add('+1684', 'AmericanSamoa');
+                                    this.add('+376', 'Andorra');
+                                    this.add('+244', 'Angola');
+                                    this.add('+1264', 'Anguilla');
+                                    this.add('+672', 'Antarctica');
+                                    this.add('+1268', 'Antigua and Barbuda');
+                                    this.add('+54', 'Argentina');
+                                    this.add('+374', 'Armenia');
+                                    this.add('+297', 'Aruba');
+                                    this.add('+61', 'Australia');
+                                    this.add('+43', 'Austria');
+                                    this.add('+994', 'Azerbaijan');
+                                    this.add('+1242', 'Bahamas');
+                                    this.add('+973', 'Bahrain');
+                                    this.add('+880', 'Bangladesh');
+                                    this.add('+1246', 'Barbados');
+                                    this.add('+375', 'Belarus');
+                                    this.add('+32', 'Belgium');
+                                    this.add('+501', 'Belize');
+                                    this.add('+229', 'Benin');
+                                    this.add('+1441', 'Bermuda');
+                                    this.add('+975', 'Bhutan');
+                                    this.add('+591', 'Bolivia, Plurinational State of');
+                                    this.add('+387', 'Bosnia and Herzegovina');
+                                    this.add('+267', 'Botswana');
+                                    this.add('+55', 'Brazil');
+                                    this.add('+246', 'British Indian Ocean Territory');
+                                    this.add('+673', 'Brunei Darussalam');
+                                    this.add('+359', 'Bulgaria');
+                                    this.add('+226', 'Burkina Faso');
+                                    this.add('+257', 'Burundi');
+                                    this.add('+855', 'Cambodia');
+                                    this.add('+237', 'Cameroon');
+                                    this.add('+1', 'Canada');
+                                    this.add('+238', 'Cape Verde');
+                                    this.add('+ 345', 'Cayman Islands');
+                                    this.add('+236', 'Central African Republic');
+                                    this.add('+235', 'Chad');
+                                    this.add('+56', 'Chile');
+                                    this.add('+86', 'China');
+                                    this.add('+61', 'Christmas Island');
+                                    this.add('+61', 'Cocos (Keeling) Islands');
+                                    this.add('+57', 'Colombia');
+                                    this.add('+269', 'Comoros');
+                                    this.add('+242', 'Congo');
+                                    this.add('+243', 'Congo, The Democratic Republic of the Congo');
+                                    this.add('+682', 'Cook Islands');
+                                    this.add('+506', 'Costa Rica');
+                                    this.add('+225', 'Cote dIvoire');
+                                    this.add('+385', 'Croatia');
+                                    this.add('+53', 'Cuba');
+                                    this.add('+357', 'Cyprus');
+                                    this.add('+420', 'Czech Republic');
+                                    this.add('+45', 'Denmark');
+                                    this.add('+253', 'Djibouti');
+                                    this.add('+1767', 'Dominica');
+                                    this.add('+1849', 'Dominican Republic');
+                                    this.add('+593', 'Ecuador');
+                                    this.add('+20', 'Egypt');
+                                    this.add('+503', 'El Salvador');
+                                    this.add('+240', 'Equatorial Guinea');
+                                    this.add('+291', 'Eritrea');
+                                    this.add('+372', 'Estonia');
+                                    this.add('+251', 'Ethiopia');
+                                    this.add('+500', 'Falkland Islands (Malvinas)');
+                                    this.add('+298', 'Faroe Islands');
+                                    this.add('+679', 'Fiji');
+                                    this.add('+358', 'Finland');
+                                    this.add('+33', 'France');
+                                    this.add('+594', 'French Guiana');
+                                    this.add('+689', 'French Polynesia');
+                                    this.add('+241', 'Gabon');
+                                    this.add('+220', 'Gambia');
+                                    this.add('+995', 'Georgia');
+                                    this.add('+49', 'Germany');
+                                    this.add('+233', 'Ghana');
+                                    this.add('+350', 'Gibraltar');
+                                    this.add('+30', 'Greece');
+                                    this.add('+299', 'Greenland');
+                                    this.add('+1473', 'Grenada');
+                                    this.add('+590', 'Guadeloupe');
+                                    this.add('+1671', 'Guam');
+                                    this.add('+502', 'Guatemala');
+                                    this.add('+44', 'Guernsey');
+                                    this.add('+224', 'Guinea');
+                                    this.add('+245', 'Guinea-Bissau');
+                                    this.add('+595', 'Guyana');
+                                    this.add('+509', 'Haiti');
+                                    this.add('+379', 'Holy See (Vatican City State)');
+                                    this.add('+504', 'Honduras');
+                                    this.add('+852', 'Hong Kong');
+                                    this.add('+36', 'Hungary');
+                                    this.add('+354', 'Iceland');
+                                    this.add('+91', 'India');
+                                    this.add('+62', 'Indonesia');
+                                    this.add('+98', 'Iran, Islamic Republic of Persian Gulf');
+                                    this.add('+964', 'Iraq');
+                                    this.add('+353', 'Ireland');
+                                    this.add('+44', 'Isle of Man');
+                                    this.add('+972', 'Israel');
+                                    this.add('+39', 'Italy');
+                                    this.add('+1876', 'Jamaica');
+                                    this.add('+81', 'Japan');
+                                    this.add('+44', 'Jersey');
+                                    this.add('+962', 'Jordan');
+                                    this.add('+77', 'Kazakhstan');
+                                    this.add('+254', 'Kenya');
+                                    this.add('+686', 'Kiribati');
+                                    this.add('+850', 'Korea, Democratic Peoples Republic of Korea');
+                                    this.add('+82', 'Korea, Republic of South Korea');
+                                    this.add('+965', 'Kuwait');
+                                    this.add('+996', 'Kyrgyzstan');
+                                    this.add('+856', 'Laos');
+                                    this.add('+371', 'Latvia');
+                                    this.add('+961', 'Lebanon');
+                                    this.add('+266', 'Lesotho');
+                                    this.add('+231', 'Liberia');
+                                    this.add('+218', 'Libyan Arab Jamahiriya');
+                                    this.add('+423', 'Liechtenstein');
+                                    this.add('+370', 'Lithuania');
+                                    this.add('+352', 'Luxembourg');
+                                    this.add('+853', 'Macao');
+                                    this.add('+389', 'Macedonia');
+                                    this.add('+261', 'Madagascar');
+                                    this.add('+265', 'Malawi');
+                                    this.add('+60', 'Malaysia');
+                                    this.add('+960', 'Maldives');
+                                    this.add('+223', 'Mali');
+                                    this.add('+356', 'Malta');
+                                    this.add('+692', 'Marshall Islands');
+                                    this.add('+596', 'Martinique');
+                                    this.add('+222', 'Mauritania');
+                                    this.add('+230', 'Mauritius');
+                                    this.add('+262', 'Mayotte');
+                                    this.add('+52', 'Mexico');
+                                    this.add('+691', 'Micronesia, Federated States of Micronesia');
+                                    this.add('+373', 'Moldova');
+                                    this.add('+377', 'Monaco');
+                                    this.add('+976', 'Mongolia');
+                                    this.add('+382', 'Montenegro');
+                                    this.add('+1664', 'Montserrat');
+                                    this.add('+212', 'Morocco');
+                                    this.add('+258', 'Mozambique');
+                                    this.add('+95', 'Myanmar');
+                                    this.add('+264', 'Namibia');
+                                    this.add('+674', 'Nauru');
+                                    this.add('+977', 'Nepal');
+                                    this.add('+31', 'Netherlands');
+                                    this.add('+599', 'Netherlands Antilles');
+                                    this.add('+687', 'New Caledonia');
+                                    this.add('+64', 'New Zealand');
+                                    this.add('+505', 'Nicaragua');
+                                    this.add('+227', 'Niger');
+                                    this.add('+234', 'Nigeria');
+                                    this.add('+683', 'Niue');
+                                    this.add('+672', 'Norfolk Island');
+                                    this.add('+1670', 'Northern Mariana Islands');
+                                    this.add('+47', 'Norway');
+                                    this.add('+968', 'Oman');
+                                    this.add('+92', 'Pakistan');
+                                    this.add('+680', 'Palau');
+                                    this.add('+970', 'Palestinian Territory, Occupied');
+                                    this.add('+507', 'Panama');
+                                    this.add('+675', 'Papua New Guinea');
+                                    this.add('+595', 'Paraguay');
+                                    this.add('+51', 'Peru');
+                                    this.add('+63', 'Philippines');
+                                    this.add('+872', 'Pitcairn');
+                                    this.add('+48', 'Poland');
+                                    this.add('+351', 'Portugal');
+                                    this.add('+1939', 'Puerto Rico');
+                                    this.add('+974', 'Qatar');
+                                    this.add('+40', 'Romania');
+                                    this.add('+7', 'Russia');
+                                    this.add('+250', 'Rwanda');
+                                    this.add('+262', 'Reunion');
+                                    this.add('+590', 'Saint Barthelemy');
+                                    this.add('+290', 'Saint Helena, Ascension and Tristan Da Cunha');
+                                    this.add('+1869', 'Saint Kitts and Nevis');
+                                    this.add('+1758', 'Saint Lucia');
+                                    this.add('+590', 'Saint Martin');
+                                    this.add('+508', 'Saint Pierre and Miquelon');
+                                    this.add('+1784', 'Saint Vincent and the Grenadines');
+                                    this.add('+685', 'Samoa');
+                                    this.add('+378', 'San Marino');
+                                    this.add('+239', 'Sao Tome and Principe');
+                                    this.add('+966', 'Saudi Arabia');
+                                    this.add('+221', 'Senegal');
+                                    this.add('+381', 'Serbia');
+                                    this.add('+248', 'Seychelles');
+                                    this.add('+232', 'Sierra Leone');
+                                    this.add('+65', 'Singapore');
+                                    this.add('+421', 'Slovakia');
+                                    this.add('+386', 'Slovenia');
+                                    this.add('+677', 'Solomon Islands');
+                                    this.add('+252', 'Somalia');
+                                    this.add('+27', 'South Africa');
+                                    this.add('+211', 'South Sudan');
+                                    this.add('+500', 'South Georgia and the South Sandwich Islands');
+                                    this.add('+34', 'Spain');
+                                    this.add('+94', 'Sri Lanka');
+                                    this.add('+249', 'Sudan');
+                                    this.add('+597', 'Suriname');
+                                    this.add('+47', 'Svalbard and Jan Mayen');
+                                    this.add('+268', 'Swaziland');
+                                    this.add('+46', 'Sweden');
+                                    this.add('+41', 'Switzerland');
+                                    this.add('+963', 'Syrian Arab Republic');
+                                    this.add('+886', 'Taiwan');
+                                    this.add('+992', 'Tajikistan');
+                                    this.add('+255', 'Tanzania, United Republic of Tanzania');
+                                    this.add('+66', 'Thailand');
+                                    this.add('+670', 'Timor-Leste');
+                                    this.add('+228', 'Togo');
+                                    this.add('+690', 'Tokelau');
+                                    this.add('+676', 'Tonga');
+                                    this.add('+1868', 'Trinidad and Tobago');
+                                    this.add('+216', 'Tunisia');
+                                    this.add('+90', 'Turkey');
+                                    this.add('+993', 'Turkmenistan');
+                                    this.add('+1649', 'Turks and Caicos Islands');
+                                    this.add('+688', 'Tuvalu');
+                                    this.add('+256', 'Uganda');
+                                    this.add('+380', 'Ukraine');
+                                    this.add('+971', 'United Arab Emirates');
+                                    this.add('+44', 'United Kingdom');
+                                    this.add('+1', 'United States');
+                                    this.add('+598', 'Uruguay');
+                                    this.add('+998', 'Uzbekistan');
+                                    this.add('+678', 'Vanuatu');
+                                    this.add('+58', 'Venezuela, Bolivarian Republic of Venezuela');
+                                    this.add('+84', 'Vietnam');
+                                    this.add('+1284', 'Virgin Islands, British');
+                                    this.add('+1340', 'Virgin Islands, U.S.');
+                                    this.add('+681', 'Wallis and Futuna');
+                                    this.add('+967', 'Yemen');
+                                    this.add('+260', 'Zambia');
+                                    this.add('+263', 'Zimbabwe');
+                                    /*var rich_combo = this
+                                     
+                                     rich_combo.add("foo", "foo", "foo")
+                                     rich_combo.add("boo", "boo", "boo")
+                                     rich_combo.add("goo", "goo", "goo")*/
+                                }
+                                , onClick: function (id) {
+                                    CKEDITOR.instances['eximBean.comment'].insertHtml(" "+id+" ");
+
+                                    console.log("InsertVariableSelect.onClick(id: " + id + ")")
+//                                    editor.execCommand("insertVariable")
+                                    editor.execCommand("insertCountryCode", id)
+                                }
+                            })
+
                         </script>
                         <br/>
                         <div class="col-xs-1" style="text-align: center;align:center" >

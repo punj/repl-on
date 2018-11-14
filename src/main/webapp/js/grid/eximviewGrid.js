@@ -6,10 +6,10 @@
 var value;
 var urlParameter;
 $(document).ready(function () {
-
+    $("#inlineloader").hide();
     // date picker
     // 
- //   $('input[name="dates"]').daterangepicker();
+    //   $('input[name="dates"]').daterangepicker();
 //date picker ends
     //   alert("#1#1#1" + window.location.href);
     var url = new URL(window.location.href);
@@ -43,6 +43,12 @@ $(document).ready(function () {
         }
     };
     $("#searchBuyer").easyAutocomplete(options2);
+    
+    
+    $("#myModal").on("hidden.bs.modal", function () {
+    // put your default event here
+    //alert('sgn close')
+});
 });
 function loadData() {
     //  var   value1 = $("#searchBuyer").getSelectedItemData();
@@ -54,6 +60,7 @@ function loadData() {
 }
 
 function setConsigneeValues(cName) {
+
     //  alert(" setConsigneeValues ")
     //  var value1 = $("#searchBuyer").getSelectedItemData();
 //    var value = $("#searchBuyer").val;
@@ -80,7 +87,7 @@ function setConsigneeValues(cName) {
             var is_contact_info_found = ('is_contact_info_found' in data) ? data.is_contact_info_found : "-1";
             var isFraud = ('isFraud' in data) ? data.isFraud : "-1";
             var everContacted = ('everContacted' in data) ? data.everContacted : "-1";
-          //  alert('isFraud '+isFraud );
+            //  alert('isFraud '+isFraud );
             console.log(" data.hasTooManyShipments " + data.hasTooManyShipments);
             console.log(" data.is_contact_info_found " + data.is_contact_info_found);
 //            $("#eximBean.consigneeName1").text(data.consignee_name);
@@ -106,7 +113,9 @@ function setConsigneeValues(cName) {
 //            document.getElementById('eximBean.hasTooManyShipments').value = hasTooManyShipments;
 //            document.getElementById('eximBean.hasTooManyShipments').value = hasTooManyShipments;
             document.getElementById('eximBean.hasTooManyShipments').value = hasTooManyShipments;
-            CKEDITOR.instances['eximBean.comment'].insertHtml(comment);
+            // alert(comment);
+            CKEDITOR.instances['eximBean.comment'].setData(comment);
+
             /* var dd = document.getElementById('eximBean.hasTooManyShipments');
              for (var i = 0; i < dd.options.length; i++) {
              if (dd.options[i].text === '-1') {
@@ -115,19 +124,11 @@ function setConsigneeValues(cName) {
              }
              }*/
 //              $("div.eximBean.hasTooManyShipments").val(hasTooManyShipments).change();
-            console.log(" Qty  " + data.quantity)
-            console.log(" MaxPrice  " + data.max_price)
-            console.log(" AvgPrice  " + data.min_price)
-            console.log(" MinPrice  " + data.avg_price)
-            // var obj = jQuery.parseJSON(data);
-            // setTimeout($("#loader").hide(), 30009);
-            //setTimeout($("#table1").html(data), 30000);
-//            $("#loader").hide();
-//            $("#table1").html(data);
-            //alert(data.length);
-            //  alert(""+data);
-
-//            value1
+            console.log(" Qty  " + data.quantity);
+            console.log(" MaxPrice  " + data.max_price);
+            console.log(" AvgPrice  " + data.min_price);
+            console.log(" MinPrice  " + data.avg_price);
+ 
             loadDetailReportData(urlParameter);
         }, error: function () {
             // notify user of error or retry
@@ -183,6 +184,8 @@ function loadDetailReportData(cName) {
 }
 
 function submitSave() {
+            // alert('sgn edited '+changeDetected);
+        // submit the form
     //   var v = document.getElementById('eximBean.is_contact_info_found').value;
     //               alert(v);
     //    alert($( "#eximBean.is_contact_info_found option:selected" ).text());
@@ -198,7 +201,7 @@ function submitSave() {
     var isBlackListed = document.getElementById('eximBean.isBlackListed').value;
     var everContacted = document.getElementById('eximBean.everContacted').value;
 
-        //alert("*** "+document.getElementById('eximBean.isBlackListed').value);//                                    alert("do submit")
+    //alert("*** "+document.getElementById('eximBean.isBlackListed').value);//                                    alert("do submit")
     var params = {
         consigneeName: $("#consigneeName1").val(),
         is_contact_info_found: is_contact_info_found,
@@ -284,4 +287,47 @@ function submitSave() {
 function scrollToTop() {
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+}
+
+
+function setReminder() {
+//    alert('sgn ');
+    $("#inlineloader").show();
+   //  $("#datepicker").datepicker("setDate", "1");
+    var date = $("#datepicker").val();
+    var time = $("#timepicker").val();
+    time = time.replace(':', "")
+    var datetime = time + "." + date;
+    // alert('date ' + date + " time " + time);
+    //alert(datetime);
+    //1300.7.Aug.2015
+    // 900.31.Oct.2018
+    if (date == "") {
+        alert('Select date');
+    } else {
+        $.ajax({
+            url: "Reminder_.action",
+            //  async: false,
+            data: {
+                date: date,
+                time: time,
+                datetime: datetime,
+             //   defaultTime: '8:00',
+                consigneeName: $("#consigneeName1").val(),
+            },
+            dataType: "json",
+            success: function (data) {
+                alert("ss");
+                $("#inlineloader").hide();
+
+            }, error: function () {
+            }, complete: function (data) {
+                $("#inlineloader").hide();
+
+                console.log(data);
+
+            }
+        });
+    }
+
 }

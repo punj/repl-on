@@ -32,7 +32,7 @@ $(document).ready(function () {
             }
         }
     };
-    $("#searchBuyer").easyAutocomplete(options2);
+   // $("#searchBuyer").easyAutocomplete(options2);
 });
 function loadData() {
     //  var   value1 = $("#searchBuyer").getSelectedItemData();

@@ -7,14 +7,17 @@ package com.repl.action.exim;
 
 import com.repl.common.NewHibernateUtil;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -23,6 +26,14 @@ import org.json.simple.JSONObject;
 public class EximGridAction extends EximGridBean {
 
     private EximGridBean bean = new EximGridBean();
+    private List<String> searchPortMap = new ArrayList<>();
+    private List<String> searchUnitList = new ArrayList<>();
+    private List<String> searchCountryList = new ArrayList<>();
+    private Map<String, String> searchIsFraudMap = new HashMap<>();
+    private Map<String, String> searchHasTooManyShipmentsMap = new HashMap<>();
+    private Map<String, String> searchContactFoundMap = new HashMap<>();
+    private Map<String, String> searchEverContactedMap = new HashMap<>();
+
     Session session = null;
 
     public EximGridAction() {
@@ -31,6 +42,13 @@ public class EximGridAction extends EximGridBean {
 
     @Override
     public String execute() throws Exception {
+        getPorts();
+        getUnits();
+        getCountries();
+        getSearchIsFraud();
+        getHasTooManyShipments();
+        getContactFound();
+        getEverContactedMap();
         return "gridView"; //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -62,16 +80,162 @@ public class EximGridAction extends EximGridBean {
 
     public int getTotalRecords() {
 
-        String query = "select count(distinct(consignee_name)) from onion_export ";
-        List priceInfo = (List) session.createSQLQuery(query).list();
-        System.out.println(" getTotalRecords  " + priceInfo.get(0));
+        String query = "select count(distinct(consignee_name)) from onion_export group by consignee_name, unit";
+        // List priceInfo = (List) session.createSQLQuery(query).list();
+        //System.out.println(" getTotalRecords  " + priceInfo.get(0));
 
-        return Integer.valueOf(priceInfo.get(0).toString());
+        return session.createSQLQuery(query).list().size();
     }
 
-    public void loadGridData() throws IOException {
+    public List<String> getPorts() {
+
+        String query = "select distinct(destination_port) from onion_export\n"
+                + " order by destination_port asc; ";
+        searchPortMap = (List) session.createSQLQuery(query).list();
+        System.out.println(" getTotalPorts  " + searchPortMap.get(0));
+        System.out.println(" getPorts  " + searchPortMap.toString());
+
+        return searchPortMap;
+    }
+
+    public List<String> getUnits() {
+
+        String query = "select distinct(unit) from onion_export\n"
+                + " order by unit asc; ";
+        searchUnitList = (List) session.createSQLQuery(query).list();
+        System.out.println(" getUnits  " + searchUnitList.get(0));
+        System.out.println(" getUnits  " + searchUnitList.toString());
+
+        return searchUnitList;
+    }
+
+    public List<String> getCountries() {
+
+        String query = "select distinct(consignee_country) from onion_export\n"
+                + " order by consignee_country asc;";
+        searchCountryList = (List) session.createSQLQuery(query).list();
+        System.out.println(" getCountries  " + searchCountryList.get(0));
+        System.out.println(" getCountries  " + searchCountryList.toString());
+
+        return searchCountryList;
+    }
+
+    private Map<String, String> getSearchIsFraud() {
+
+        String query = "select \n"
+                + "distinct(\n"
+                + "case\n"
+                + "                    ifnull(isfraud,'Unkown') \n"
+                + "                    when 'N' then 'NO'\n"
+                + "                    when 'Y' then 'YES'\n"
+                + "                    when 'Unkown' then '?'\n"
+                + "                    end )as `isFraudValue`, ISFRAUD as IsFraudKey\n"
+                + "from onion_export order by isFraudValue asc;";
+        List list = (List) session.createSQLQuery(query).list();
+        int size = list.size();
+        for (int i = 0; i < size; i++) {
+            System.out.println("...> " + list.get(i));
+            Object[] o = (Object[]) list.get(i);
+            searchIsFraudMap.put(String.valueOf(o[1]), String.valueOf(o[0]));
+//           if (checkNull(String.valueOf(o[0]))) {}
+
+        }
+
+        System.out.println(" getSearchIsFraud  " + searchIsFraudMap.get(0));
+        System.out.println(" getSearchIsFraud  " + searchIsFraudMap.toString());
+
+        return searchIsFraudMap;
+    }
+
+    private Map<String, String> getHasTooManyShipments() {
+
+        String query = "select \n"
+                + "distinct(\n"
+                + "case\n"
+                + "                    ifnull(hasTooManyShipments,'Unkown') \n"
+                + "                    when 'B' then 'BIG'\n"
+                + "                    when 'M' then 'MICRO'\n"
+                + "                    when 'S' then 'SMALL'\n"
+                + "                    when 'O' then 'MEDIUM'\n"
+                + "                    when 'L' then 'LARGE'\n"
+                + "                    when 'G' then 'GIANT'\n"
+                + "                    when 'Unkown' then '?'\n"
+                + "                    end )as `hasTooManyShipmentsValue`, hasTooManyShipments as 'hasTooManyShipmentsKey'\n"
+                + "from onion_export order by hasTooManyShipments asc;";
+        List list = (List) session.createSQLQuery(query).list();
+        int size = list.size();
+        for (int i = 0; i < size; i++) {
+            System.out.println("...> " + list.get(i));
+            Object[] o = (Object[]) list.get(i);
+            searchHasTooManyShipmentsMap.put(String.valueOf(o[1]), String.valueOf(o[0]));
+//           if (checkNull(String.valueOf(o[0]))) {}
+
+        }
+
+        System.out.println(" getHasTooManyShipments  " + searchHasTooManyShipmentsMap.get(0));
+        System.out.println(" getHasTooManyShipments  " + searchHasTooManyShipmentsMap.toString());
+
+        return searchHasTooManyShipmentsMap;
+    }
+
+    private Map<String, String> getContactFound() {
+
+        String query = "select \n"
+                + "distinct(\n"
+                + "case\n"
+                + "                    ifnull(is_contact_info_found,'Unkown') \n"
+                + "                    when 'N' then 'NO'\n"
+                + "                    when 'Y' then 'YES'\n"
+                + "                    when 'L' then 'LATER'\n"
+                + "                    when 'Unkown' then '?'\n"
+                + "                    end )as `is_contact_info_found_value`, is_contact_info_found as 'is_contact_info_found_key'\n"
+                + "from onion_export order by is_contact_info_found_value asc;";
+        List list = (List) session.createSQLQuery(query).list();
+        int size = list.size();
+        for (int i = 0; i < size; i++) {
+            System.out.println("...> " + list.get(i));
+            Object[] o = (Object[]) list.get(i);
+            searchContactFoundMap.put(String.valueOf(o[1]), String.valueOf(o[0]));
+//           if (checkNull(String.valueOf(o[0]))) {}
+        }
+
+        System.out.println(" searchContactFoundMap  " + searchContactFoundMap.get(0));
+        System.out.println(" searchContactFoundMap  " + searchContactFoundMap.toString());
+
+        return searchContactFoundMap;
+    }
+
+    private Map<String, String> getEverContactedMap() {
+
+        String query = "select \n"
+                + "distinct(\n"
+                + "case\n"
+                + "                    ifnull(everContacted,'Unkown') \n"
+                + "                    when 'N' then 'NO'\n"
+                + "                    when 'Y' then 'YES'\n"
+                + "                    when 'Unkown' then '?'\n"
+                + "                    end )as `everContactedValue`, everContacted as `everContactedKey`\n"
+                + "from onion_export order by everContacted asc;";
+        List list = (List) session.createSQLQuery(query).list();
+        int size = list.size();
+        for (int i = 0; i < size; i++) {
+            System.out.println("...> " + list.get(i));
+            Object[] o = (Object[]) list.get(i);
+            searchEverContactedMap.put(String.valueOf(o[1]), String.valueOf(o[0]));
+//           if (checkNull(String.valueOf(o[0]))) {}
+        }
+
+        System.out.println(" searchEverContactedMap  " + searchEverContactedMap.get(0));
+        System.out.println(" searchEverContactedMap  " + searchEverContactedMap.toString());
+
+        return searchEverContactedMap;
+    }
+
+    public void loadGridData() throws IOException, ParseException {
         try {
+
             getTotalRecords();
+
             System.out.println("getQueryString " + java.net.URLDecoder.decode(request.getQueryString(), "UTF-8"));
             int draw = 1;
             String orderFiled;
@@ -80,18 +244,42 @@ public class EximGridAction extends EximGridBean {
             System.out.println("SGN");
 //search[value]
             String query = "select \n"
-                    + "distinct(consignee_name),\n" //0
-                    + "sum(quantity) qty,\n"//1
-                    + "unit,\n"//2
-                    + "DATE_FORMAT(sb_date, '%d/%m/%Y'),\n" //3
-                    + "destination_port,\n" //4
-                    + "ifnull(hasTooManyShipments,'Unkown'),\n" //5
-                    + "ifnull(is_contact_info_found,'Not Yet')\n," //6
-                    + "consignee_country,\n" //7
-                    + "date_format(updatedON, '%d/%m/%Y %l:%i %p') updatedon,\n" //8
-                    + "ifnull(isFraud,'?'),\n" //9
-                    + "ifnull(everContacted,'N')\n" //10
-                    + "from onion_export\n"; //
+                    + "distinct(consignee_name),\n"
+                    + "sum(quantity) qty,\n"
+                    + "unit,\n"
+                    + "DATE_FORMAT(sb_date, '%d/%m/%Y') date,\n"
+                    + "destination_port,\n"
+                    + "case\n"
+                    + "ifnull(hasTooManyShipments,'Unkown') \n"
+                    + "	when 'B' then 'BIG'\n"
+                    + "	when 'M' then 'MICRO'\n"
+                    + "	when 'S' then 'SMALL'\n"
+                    + "	when 'O' then 'MEDIUM'\n"
+                    + "	when 'L' then 'LARGE'\n"
+                    + "	when 'G' then 'GIANT'\n"
+                    + "	when 'Unkown' then '?'\n"
+                    + "	 end as `hasTooManyShipments`,\n"
+                    + "case\n"
+                    + "ifnull(is_contact_info_found,'Not Yet')\n"
+                    + "	when 'Y' then 'YES'\n"
+                    + "	when 'L' then 'LATER'\n"
+                    + "	when 'N' then 'NO'\n"
+                    + "	when 'Not Yet' then 'Not Yet'\n"
+                    + "	 end as `is_contact_info_found`,\n"
+                    + "consignee_country,\n"
+                    + "date_format(updatedON, '%d/%m/%Y %l:%i %p') updatedon,\n"
+                    + "case\n"
+                    + "ifnull(isFraud,'?')\n"
+                    + "	when 'Y' then 'YES'\n"
+                    + "	when 'N' then 'NO'\n"
+                    + "	when '?' then '?'\n"
+                    + "	 end as `isFraud`,\n"
+                    + "case\n"
+                    + "ifnull(everContacted,'N')\n"
+                    + "	when 'Y' then 'YES'\n"
+                    + "	when 'N' then 'NO'\n"
+                    + "	end as `everContacted`\n"
+                    + "from onion_export"; //
 
             /* 
              private String DATE_COLUMN = "columns[0][search]"; //
@@ -114,59 +302,76 @@ public class EximGridAction extends EximGridBean {
             }
 
             // any search
-            if (checkIfParameterValueIsNotNull("search[value]")) {
+            /* if (checkIfParameterValueIsNotNull("search[value]")) {
                 searchValue = getParameterValue("search[value]");
                 query += " UPPER(consignee_name) like '%" + searchValue + "%' ";
                 firstSearch = false;
-            }
-
+            }*/
             // unit search
             if (checkIfParameterValueIsNotNull(UNIT_COLUMN)) {
                 searchValue = getParameterValue(UNIT_COLUMN);
-                System.out.println("  firstSearch in unit Search " + firstSearch);
-                if (!firstSearch) {
-                    query += " AND ";
-                } else {
-                    firstSearch = false;
+                if (!searchValue.isEmpty()) {
+                    System.out.println("  firstSearch in unit Search " + firstSearch);
+                    if (!firstSearch) {
+                        query += " AND ";
+                    } else {
+                        firstSearch = false;
+                    }
+                    query += " UPPER(unit) like '%" + searchValue.toUpperCase() + "%' ";
                 }
-                query += " UPPER(unit) like '%" + searchValue.toUpperCase() + "%' ";
             }
             // consignee_name search
             if (checkIfParameterValueIsNotNull(CONSIGNEE_NAME_COLUMN)) {
                 searchValue = getParameterValue(CONSIGNEE_NAME_COLUMN);
-                System.out.println("  firstSearch in unit Search " + firstSearch);
-                if (!firstSearch) {
-                    query += " AND ";
+                
+                    System.out.println("  firstSearch in unit Search " + firstSearch);
+                    if (!firstSearch) {
+                        query += " AND ";
+                    } else {
+                        firstSearch = false;
+                    }
+                    if (!searchValue.isEmpty()) {
+//                query += " UPPER(consignee_name) like '%" + searchValue.toUpperCase() + "%' ";
+                    query += " UPPER(consignee_name) like '" + searchValue.toUpperCase() + "' ";
                 } else {
-                    firstSearch = false;
+                    query += " UPPER(consignee_name) like '%" + searchValue.toUpperCase() + "%' ";
+
                 }
-                query += " UPPER(consignee_name) like '" + searchValue + "%' ";
             }
             // Port Name Search
             if (checkIfParameterValueIsNotNull(DESTINATION_PORT_COLUMN)) {
                 searchValue = getParameterValue(DESTINATION_PORT_COLUMN);
-                System.out.println("  firstSearch in unit Search " + firstSearch);
-                if (!firstSearch) {
-                    query += " AND ";
-                } else {
-                    firstSearch = false;
+                if (!searchValue.isEmpty()) {
+                    System.out.println("  firstSearch in unit Search " + firstSearch);
+                    if (!firstSearch) {
+                        query += " AND ";
+                    } else {
+                        firstSearch = false;
+                    }
+                    query += " UPPER(destination_port) like '" + searchValue.toUpperCase() + "%' ";
                 }
-                query += " UPPER(destination_port) like '" + searchValue.toUpperCase() + "%' ";
             }
 
             // IS CONTACT FOUND
             if (checkIfParameterValueIsNotNull(IS_CONTACT_INFO_FOUND_COLUMN)) {
                 searchValue = getParameterValue(IS_CONTACT_INFO_FOUND_COLUMN);
-                System.out.println("  firstSearch in unit Search " + firstSearch);
-                if (!firstSearch) {
-                    query += " AND ";
-                } else {
-                    firstSearch = false;
+                if (!searchValue.isEmpty()) {
+                    System.out.println("  firstSearch in unit Search " + firstSearch);
+                    if (!firstSearch) {
+                        query += " AND ";
+                    } else {
+                        firstSearch = false;
+                    }
+                    if (searchValue.equalsIgnoreCase("null")) {
+                        query += " UPPER(is_contact_info_found) IS NULL ";
+                    } else {
+                        query += " UPPER(is_contact_info_found) like '" + searchValue + "%' ";
+                    }
+
                 }
-                query += " UPPER(is_contact_info_found) like '" + searchValue + "%' ";
             }
             // IS CONTACT FOUND
-            if (checkIfParameterValueIsNotNull(IS_CONTACT_INFO_FOUND_COLUMN)) {
+            /* if (checkIfParameterValueIsNotNull(IS_CONTACT_INFO_FOUND_COLUMN)) {
                 searchValue = getParameterValue(IS_CONTACT_INFO_FOUND_COLUMN);
                 System.out.println("  firstSearch in unit Search " + firstSearch);
                 if (!firstSearch) {
@@ -175,9 +380,10 @@ public class EximGridAction extends EximGridBean {
                     firstSearch = false;
                 }
                 query += " UPPER(is_contact_info_found) like '" + searchValue + "%' ";
-            }
+            }*/
             // IS FRAUD
             if (checkIfParameterValueIsNotNull(SEARCH_IS_FRAUD) && !getParameterValue(SEARCH_IS_FRAUD).isEmpty()) {
+
                 searchValue = getParameterValue(SEARCH_IS_FRAUD);
                 System.out.println("  firstSearch in unit Search " + firstSearch);
                 if (!firstSearch) {
@@ -185,7 +391,57 @@ public class EximGridAction extends EximGridBean {
                 } else {
                     firstSearch = false;
                 }
-                query += " UPPER(ISFRAUD) like '" + searchValue + "%' ";
+                if (searchValue.equalsIgnoreCase("null")) {
+                    query += " UPPER(ISFRAUD) IS NULL ";
+                } else {
+                    query += " UPPER(ISFRAUD) like '" + searchValue + "%' ";
+                }
+            }
+            // SEARCH :: HAS_TOO_MANY_SHIPMENTSCOLUMN
+            if (checkIfParameterValueIsNotNull(HAS_TOO_MANY_SHIPMENTSCOLUMN) && !getParameterValue(HAS_TOO_MANY_SHIPMENTSCOLUMN).isEmpty()) {
+                searchValue = getParameterValue(HAS_TOO_MANY_SHIPMENTSCOLUMN);
+                System.out.println("  firstSearch in HAS_TOO_MANY_SHIPMENTSCOLUMN Search " + firstSearch);
+                if (!firstSearch) {
+                    query += " AND ";
+                } else {
+                    firstSearch = false;
+                }
+                if (searchValue.equalsIgnoreCase("null")) {
+                    query += " UPPER(hasTooManyShipments) IS NULL ";
+                } else {
+                    query += " UPPER(hasTooManyShipments) like '" + searchValue + "%' ";
+                }
+            }
+            // SEARCH :: SEARCH_CONSIGNEE_COUNTRY
+            if (checkIfParameterValueIsNotNull(SEARCH_CONSIGNEE_COUNTRY) && !getParameterValue(SEARCH_CONSIGNEE_COUNTRY).isEmpty()) {
+                searchValue = getParameterValue(SEARCH_CONSIGNEE_COUNTRY);
+                System.out.println("  firstSearch in SEARCH_CONSIGNEE_COUNTRY Search " + firstSearch);
+                if (!firstSearch) {
+                    query += " AND ";
+                } else {
+                    firstSearch = false;
+                }
+                query += " UPPER(consignee_country) like '" + searchValue + "%' ";
+            }
+            // SEARCH :: DATE BETWEEN
+            if (checkIfParameterValueIsNotNull(SEARCH_DATE_BETWEEN) && !getParameterValue(SEARCH_DATE_BETWEEN).isEmpty()) {
+                searchValue = getParameterValue(SEARCH_DATE_BETWEEN);
+                System.out.println("  firstSearch in SEARCH_CONSIGNEE_COUNTRY Search " + firstSearch);
+//                JSONObject tempJSON = new JSONObject();
+                JSONParser parser = new JSONParser();
+                JSONObject json = (JSONObject) parser.parse(searchValue);
+                String startDate = json.get("startDate").toString();
+                String endDate = json.get("endDate").toString();
+                System.out.println(" json startDate ****** " + json.get("startDate"));
+                System.out.println(" json endDate ****** " + json.get("endDate"));
+                System.out.println(" json ****** " + json);
+
+                if (!firstSearch) {
+                    query += " AND ";
+                } else {
+                    firstSearch = false;
+                }
+                query += " sb_date BETWEEN '" + startDate + "%'  AND  '" + endDate + "'";
             }
             // EVER CONTACTED
             if (checkIfParameterValueIsNotNull(SEARCH_EVER_CONTACTED) && !getParameterValue(SEARCH_EVER_CONTACTED).isEmpty()) {
@@ -196,7 +452,11 @@ public class EximGridAction extends EximGridBean {
                 } else {
                     firstSearch = false;
                 }
-                query += " UPPER(EVERCONTACTED) like '" + searchValue + "%' ";
+                if (searchValue.equalsIgnoreCase("null")) {
+                    query += " UPPER(EVERCONTACTED) IS NULL ";
+                } else {
+                    query += " UPPER(EVERCONTACTED) like '" + searchValue + "%' ";
+                }
             }
 
             query += "group by consignee_name, unit\n";
@@ -381,7 +641,7 @@ public class EximGridAction extends EximGridBean {
 
                 }
                 if (checkNull(String.valueOf(o[9]))) {
-                    System.out.println("IS Fraud "+String.valueOf(o[9]));
+                    //   System.out.println("IS Fraud " + String.valueOf(o[9]));
                     dataTableObj.put("isFraud", String.valueOf(o[9]));
 
                 }
@@ -396,12 +656,22 @@ public class EximGridAction extends EximGridBean {
                 dataTablesRecords.add(dataTableObj);
             }
             obj.put("recordsTotal", getTotalRecords());
-            obj.put("recordsFilter", priceInfo.size());
+//            obj.put("recordsTotal", 100);
+//            obj.put("recordsFilter", priceInfo.size());
+            System.out.println("datatables records  size " + getFilteredRecords(query));
+            obj.put("recordsFiltered", getFilteredRecords(query));
+//            obj.put("recordsFiltered", 40);
+//            obj.put("recordsFiltered", 40);
+//            obj.put("recordsDisplay", 20);
             obj.put("data", dataTablesRecords);
-            obj.put("pages", 244);
+//            obj.put("pages", 244);
+//            obj.put("length", Integer.valueOf(length));
+//            obj.put("end", Integer.valueOf(start) + Integer.valueOf(length));
+//            obj.put("start", (Integer.valueOf(start) + Integer.valueOf(length)) - Integer.valueOf(length));
+//            obj.put("start", Integer.valueOf(start)-Integer.valueOf(length));
             // dataTablesRecords.add(obj);// obj.put("StudentList", jsonArray);
             //  obj.put(obj, NONE);
-            // System.out.println("^^^^^^^ " + obj.toJSONString());
+            //  System.out.println("^^^^^^^ " + obj.toJSONString());
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(obj.toJSONString());
             response.flushBuffer();
@@ -413,9 +683,18 @@ public class EximGridAction extends EximGridBean {
         }
     }
 
+    private Integer getFilteredRecords(String query) {
+        query = query.substring(0, query.indexOf("limit"));
+        System.out.println("Query &&&&& " + query);
+        Integer size = session.createSQLQuery(query).list().size();
+        System.out.println("size **** >>> " + size);
+        return size;
+    }
+
     public static void main(String[] args) throws IOException {
         EximGridAction ex = new EximGridAction();
-        ex.loadGridData();
+//        ex.loadGridData();
+        ex.getSearchIsFraud();
 //        PrintWriter writer = null;
 //        writer.println(jsonArray.toString());
 //            writer.println(obj);
@@ -477,10 +756,12 @@ public class EximGridAction extends EximGridBean {
     private String UNIT_COLUMN = "columns[4][search][value]";
     private String IS_CONTACT_INFO_FOUND_COLUMN = "columns[5][search][value]";
     private String HAS_TOO_MANY_SHIPMENTSCOLUMN = "columns[6][search][value]";
+    private String SEARCH_CONSIGNEE_COUNTRY = "columns[7][search][value]";
     private String SEARCH_MINQTY = "minQty";
     private String SEARCH_MAXQTY = "maxQty";
     private String SEARCH_IS_FRAUD = "columns[9][search][value]";
     private String SEARCH_EVER_CONTACTED = "columns[10][search][value]";
+    private String SEARCH_DATE_BETWEEN = "columns[0][search][value]";
     private boolean firstSearch = true;
     private boolean firstHaving = true;
 
@@ -501,5 +782,61 @@ public class EximGridAction extends EximGridBean {
     private String ORDER_IS_CONTACT_INFO_FOUND_COLUMN = "5";
     private String ORDER_HAS_TOO_MANY_SHIPMENTSCOLUMN = "6";
     private String ORDER_UPDATED_ON = "8";
+
+    public List<String> getSearchPortMap() {
+        return searchPortMap;
+    }
+
+    public void setSearchPortMap(List<String> searchPortMap) {
+        this.searchPortMap = searchPortMap;
+    }
+
+    public List<String> getSearchUnitList() {
+        return searchUnitList;
+    }
+
+    public void setSearchUnitList(List<String> searchUnitList) {
+        this.searchUnitList = searchUnitList;
+    }
+
+    public List<String> getSearchCountryList() {
+        return searchCountryList;
+    }
+
+    public void setSearchCountryList(List<String> searchCountryList) {
+        this.searchCountryList = searchCountryList;
+    }
+
+    public Map<String, String> getSearchIsFraudMap() {
+        return searchIsFraudMap;
+    }
+
+    public void setSearchIsFraudMap(Map<String, String> searchIsFraudMap) {
+        this.searchIsFraudMap = searchIsFraudMap;
+    }
+
+    public Map<String, String> getSearchHasTooManyShipmentsMap() {
+        return searchHasTooManyShipmentsMap;
+    }
+
+    public void setSearchHasTooManyShipmentsMap(Map<String, String> searchHasTooManyShipmentsMap) {
+        this.searchHasTooManyShipmentsMap = searchHasTooManyShipmentsMap;
+    }
+
+    public Map<String, String> getSearchContactFoundMap() {
+        return searchContactFoundMap;
+    }
+
+    public void setSearchContactFoundMap(Map<String, String> searchContactFoundMap) {
+        this.searchContactFoundMap = searchContactFoundMap;
+    }
+
+    public Map<String, String> getSearchEverContactedMap() {
+        return searchEverContactedMap;
+    }
+
+    public void setSearchEverContactedMap(Map<String, String> searchEverContactedMap) {
+        this.searchEverContactedMap = searchEverContactedMap;
+    }
 
 }

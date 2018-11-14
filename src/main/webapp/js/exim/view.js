@@ -157,4 +157,13 @@ function setValue(buttonName) {
     CKEDITOR.instances['eximBean.comment'].insertHtml("<p><strong> <span class='marker'>" + value + "&nbsp;</span></strong></p>");
 //    ('textarea#eximBean.comment').ckeditor().editor.insertText('eximBean.comment');
 }
+function setValue1() {
+    alert("sgn   ");
+   // var value = $("#" + buttonName).val();
+    var ts = new Date();
+    console.log(ts.toLocaleString());
+    //document.getElementById("eximBean.comment").value += value;
+    CKEDITOR.instances['eximBean.comment'].insertHtml("<p><strong> <span class='marker'>" + ts.toLocaleString() + "&nbsp;</span></strong></p>");
+//    ('textarea#eximBean.comment').ckeditor().editor.insertText('eximBean.comment');
+}
 
